@@ -3,12 +3,15 @@ import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { ToastContainer } from "react-toastify";
+import { getAuth } from "firebase/auth";
+import { auth } from "./firebase";
 import "react-toastify/dist/ReactToastify.css";
 import { Helmet } from "react-helmet";
 import Error404Page from "./Error404Page";
 const AboutUs = lazy(() => import("./AboutUs"));
 const LandingPage = lazy(() => import("./LandingPage/LandingPage"));
-
+const Login = lazy(() => import("./pages/auth/Login"));
+const RegisterComplete = lazy(() => import("./pages/auth/RegisterComplete"));
 // const UserPacksPage = lazy(() => import("./UserPages/UserPacksPage"));
 // const ThreeDCarouselPage = lazy(() =>
 //   import("./ThreeDCarousel/ThreeDCarouselPage")
@@ -78,10 +81,9 @@ const LandingPage = lazy(() => import("./LandingPage/LandingPage"));
 // const LiveCollage = lazy(() => import("./LivePages/LiveCollage"));
 // const SevenDayHome = lazy(() => import("./pages/SevenDayHome"));
 // const ValentineHome = lazy(() => import("./pages/ValentineHome"));
-// const Login = lazy(() => import("./pages/auth/Login"));
 // const Home = lazy(() => import("./pages/Home"));
 
-// const RegisterComplete = lazy(() => import("./pages/auth/RegisterComplete"));
+
 // const ForgotPassword = lazy(() => import("./pages/auth/ForgotPassword"));
 // const ContinuePack = lazy(() => import("./pages/ContinuePack"));
 // const ScheduledLiveHoneyComb = lazy(() =>
@@ -144,24 +146,25 @@ const LandingPage = lazy(() => import("./LandingPage/LandingPage"));
 
 const App = () => {
   const dispatch = useDispatch();
+  const auth = getAuth();
 
   useEffect(() => {
-    // const unsubscribe = auth.onAuthStateChanged(async (user) => {
-    //   if (user) {
-    //     const idTokenResult = await user.getIdTokenResult();
-    //     dispatch({
-    //       type: "LOGGED_IN_USER",
-    //       payload: {
-    //         email: user.email,
-    //         token: idTokenResult.token,
-    //         uid: user.uid,
-    //         profilepic: user.photoURL,
-    //       },
-    //     });
-    //   }
-    // });
-    // return () => unsubscribe();
-  }, []);
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        const idTokenResult = await user.getIdTokenResult();
+        dispatch({
+          type: "LOGGED_IN_USER",
+          payload: {
+            email: user.email,
+            token: idTokenResult.token,
+            uid: user.uid,
+            profilepic: user.photoURL,
+          },
+        });
+      }
+    });
+    return () => unsubscribe();
+  }, [auth, dispatch]);
 
   return (
     <div className="App">
@@ -219,14 +222,14 @@ const App = () => {
           <Route  path="/calendarpage" component={<CalendarPage />} />
           <Route  path="/swatchbookpage" component={<SwatchBookPage />} /> */ }
           <Route  path="/" element={<LandingPage />} />
+          <Route  path="/login" element={<Login />} />
+          <Route  path="/register/complete" element={<RegisterComplete />} />
           {/* <Route  path="/animatedframe" component={<AnimatedFrame />} />
           <Route  path="/userpackspage" component={<UserPacksPage />} />
           <Route  path="/home" component={<Home />} />
           <Route  path="/recommendedhome" component={<SevenDayHome />} />
           <Route  path="/valentinehome" component={<ValentineHome />} />
           <Route  path="/ContinuePack/:slug" component={<ContinuePack />} />
-          <Route  path="/login" component={<Login />} />
-          <Route  path="/register/complete" component={<RegisterComplete />} />
           <Route  path="/forgot/password" component={<ForgotPassword />} />
           <Route  path="/memorygamepage" component={<MemoryGamePage />} />
           <Route  path="/collagepage" component={<CollagePage />} />

@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-// import firebase from "firebase";
+import { auth } from "../firebase";
+import { getAuth } from "firebase/auth";
+import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import "./NavBar.css";
-// import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 export default function DummyNavBar() {
+  const auth = getAuth();
   const [navstate, setnavstate] = useState(false);
   useEffect(() => {
     window.addEventListener("scroll", changeBackground);
@@ -22,11 +25,12 @@ export default function DummyNavBar() {
   let { user } = useSelector((state) => ({ ...state }));
 
   const logout = () => {
-    // firebase.auth().signOut();
+    auth.signOut();
     dispatch({
       type: "LOGOUT",
       payload: null,
     });
+    toast.warning(`Logut successfull`);
     navigate("/login");
   };
   return (
@@ -94,7 +98,7 @@ export default function DummyNavBar() {
                     </a>
                   </li>
                   <li class="nav-item avatar dropdown">
-                    <a
+                    <a onClick={logout}
                       class="nav-link dropdown-toggle p-0"
                       id="navbarDropdownMenuLink-5"
                       data-toggle="dropdown"
