@@ -6,17 +6,12 @@ import Loader from "react-loader-spinner";
 import { Link } from "react-router-dom";
 import Tour from "reactour";
 import { v4 as uuidv4 } from "uuid";
-import "../Buttons.css";
 import {
-  addDoc,
-  collection,
-  doc,
-  serverTimestamp,
-  setDoc,
-} from "firebase/firestore";
-import { auth, db, fStore, storage } from "../firebase";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { getDatabase, ref as ref1, push, child, update } from "firebase/database";
+  updateSlidePuzzleWithImage,
+  addDataToRealTImeDatabase,
+  uploadImageAndGetDownloadURL,
+} from "../Utils/firebaseUtilFunctions";
+import "../Buttons.css";
 import NavBar from "../NavBars/NavBar";
 import HeaderBtn from "../Studio/HeaderBtn";
 import Copy from "../Utils/Copy";
@@ -50,7 +45,6 @@ function SlidePuzzlePage() {
   const [send, setSend] = useState();
   const [loading, setloading] = useState(false);
 
-  const database = getDatabase();
   const [fbimg, setfbimg] = useState(
     "https://firebasestorage.googleapis.com/v0/b/update-image.appspot.com/o/imp%2Ftom-and-jerry-hd-background.jpg?alt=media&token=a5fb8323-7899-46d7-8119-16b69e1e2531"
   );
@@ -73,91 +67,42 @@ function SlidePuzzlePage() {
     var ud = uuidv4();
 
     if (livelink) {
-      // const slidePuzzleRef = ref1(db, "SlidePuzzle");
-      // const childRef = child(slidePuzzleRef, realTimeDBKey);
-      // const updatedData = {
-      //   url: fbimg,
-      //   best_score: 10000,
-      // };
-      // update(childRef, updatedData)
-      //   .then(() => {
-      //     console.log("Value updated successfully!");
-      //   })
-      //   .catch((error) => {
-      //     console.error("Error updating value:", error);
-      //   });
-        
-      // setloading(false);
-
-      const storageRef = ref(storage, `/images/slidePuzzle/${ud}`);
-      const uploadTask = uploadBytesResumable(storageRef, image_url);
-
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log("Upload is " + progress + "% done");
-        },
-        (error) => {
-          console.log(error);
-        },
-        async () => {
-          console.log("Image uploaded successfully");
-          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-          setFireUrl(downloadURL);
-          console.log("DWARAKA uploaded url", downloadURL);
-
-          const slidePuzzleRef = ref1(db, "SlidePuzzle");
-          const childRef = child(slidePuzzleRef, realTimeDBKey);
-          const updatedData = {
-            url: downloadURL,
-            best_score: 10000,
-          };
-          update(childRef, updatedData)
-            .then(() => {
-              console.log("Value updated successfully!");
-            })
-            .catch((error) => {
-              console.error("Error updating value:", error);
-            });
-            
-          setloading(false);
-        }
+      const storedImgURL = await uploadImageAndGetDownloadURL(
+        image_url,
+        `/images/slidePuzzle/${ud}`,
       );
-      setloading(false);
+      const data = {
+        url: storedImgURL,
+        best_score: 1000,
+      }
+      updateSlidePuzzleWithImage(
+        data,
+        "SlidePuzzle",
+        realTimeDBKey
+      );
     } else {
-      const storageRef = ref(storage, `/images/slidePuzzle/${ud}`);
-      const uploadTask = uploadBytesResumable(storageRef, image_url);
-
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log("Upload is " + progress + "% done");
-        },
-        (error) => {
-          console.log(error);
-        },
-        async () => {
-          console.log("Image uploaded successfully");
-          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-          setFireUrl(downloadURL);
-          console.log("DWARAKA uploaded url", downloadURL);
-
-          const newKey = push(ref1(db, "SlidePuzzle"), {
-            url: downloadURL,
-            best_score: 100000,
-          }).key;
-
-          setlivelink("http://update-image.web.app/live/slidepuzzle/" + newKey);
-          setRealTimeDBKey(newKey);
-          setpreviewlink("/live/slidepuzzle/" + newKey);
-        }
+      const storedImgURL = await uploadImageAndGetDownloadURL(
+        image_url,
+        `/images/slidePuzzle/${ud}`,
       );
-      setloading(false);
+      const data = {
+        url: storedImgURL,
+        best_score: 1000,
+      }
+      addDataToRealTImeDatabase(
+        data,
+        "SlidePuzzle"
+      ).then((newKey) => {
+        console.log("New key:", newKey);
+        setlivelink("http://update-image.web.app/live/slidepuzzle/" + newKey);
+        setRealTimeDBKey(newKey);
+        setpreviewlink("/live/slidepuzzle/" + newKey);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
     }
+    setloading(false);
   };
   const tourConfig = [
     {
