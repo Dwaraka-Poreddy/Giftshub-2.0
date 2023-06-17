@@ -1,19 +1,17 @@
 import React from "react";
+import img404 from "./Images/404Error.jpg";
 
 export default function Error404Page() {
   return (
-    <div>
-      <img
-        style={{
-          width: "50%",
-          position: "absolute",
-          left: "50%",
-          top: "50%",
-          transform: "translate(-50%, -50%)",
-        }}
-        src="https://www.katalystcreativegroup.com/images/blog/maintenance/404-page-not-found-message.jpg"
-        alt="err"
-      />
-    </div>
+    <div
+      style={{
+        width: "100%",
+        height: "100vh",
+        backgroundImage: "url(" + img404 + ")",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "100% 100%",
+        backgroundPosition: "center",
+      }}
+    ></div>
   );
 }

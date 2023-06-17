@@ -13,6 +13,7 @@ const LandingPage = lazy(() => import("./LandingPage/LandingPage"));
 const Login = lazy(() => import("./pages/auth/Login"));
 const RegisterComplete = lazy(() => import("./pages/auth/RegisterComplete"));
 const SlidePuzzlePage = lazy(() => import("./SlidePuzzle/SlidePuzzlePage"));
+const LiveSlidePuzzle = lazy(() => import("./LivePages/LiveSlidePuzzle"));
 // const UserPacksPage = lazy(() => import("./UserPages/UserPacksPage"));
 // const ThreeDCarouselPage = lazy(() =>
 //   import("./ThreeDCarousel/ThreeDCarouselPage")
@@ -67,7 +68,6 @@ const SlidePuzzlePage = lazy(() => import("./SlidePuzzle/SlidePuzzlePage"));
 // const LiveSwatchBook = lazy(() => import("./LivePages/LiveSwatchBook"));
 // const LiveSplitWall = lazy(() => import("./LivePages/LiveSplitWall.js"));
 // const LiveThreeDImage = lazy(() => import("./LivePages/LiveThreeDImage"));
-// const LiveSlidePuzzle = lazy(() => import("./LivePages/LiveSlidePuzzle"));
 // const LiveSpecialCard = lazy(() => import("./LivePages/LiveSpecialCard"));
 // const HoneyCombPage = lazy(() => import("./HoneyComb/HoneyCombPage"));
 // const ThreeDImagePage = lazy(() => import("./ThreeDImage/ThreeDImagePage"));
@@ -281,11 +281,11 @@ const App = () => {
             path="/live/specialcard/:slug"
             component={<LiveSpecialCard />}
           /> */ }
-          {/* <Route
+          <Route
             
             path="/live/slidepuzzle/:slug"
-            component={<LiveSlidePuzzle />}
-          /> */ }
+            element={<LiveSlidePuzzle />}
+          />
           {/* <Route
             
             path="/live/threedimage/:slug"

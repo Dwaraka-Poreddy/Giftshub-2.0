@@ -15,12 +15,8 @@ import {
   setDoc,
 } from "firebase/firestore";
 import { auth, db, fStore, storage } from "../firebase";
-import {
-  ref,
-  uploadBytesResumable,
-  getDownloadURL,
-} from "firebase/storage";
-import {getDatabase, ref as ref1, push } from "firebase/database";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { getDatabase, ref as ref1, push, child, update } from "firebase/database";
 import NavBar from "../NavBars/NavBar";
 import HeaderBtn from "../Studio/HeaderBtn";
 import Copy from "../Utils/Copy";
@@ -46,6 +42,7 @@ function SlidePuzzlePage() {
   const [showshare, setshowshare] = useState(false);
   const [livelink, setlivelink] = useState();
   const [previewlink, setpreviewlink] = useState("");
+  const [realTimeDBKey, setRealTimeDBKey] = useState("");
   const [fireurl, setFireUrl] = useState("");
   const [imageAsFile, setImageAsFile] = useState("");
   const [image_url, setimage_url] = useState();
@@ -57,10 +54,7 @@ function SlidePuzzlePage() {
   const [fbimg, setfbimg] = useState(
     "https://firebasestorage.googleapis.com/v0/b/update-image.appspot.com/o/imp%2Ftom-and-jerry-hd-background.jpg?alt=media&token=a5fb8323-7899-46d7-8119-16b69e1e2531"
   );
-  // const handlepuzzlescore = (e) => {
-  //   console.log("inside page", e, "puzz", puzzlescore);
-  //   setpuzzlescore(e);
-  // };
+
   const handlepuzzlescore = (e) => {
     console.log("Yoooo");
   };
@@ -74,90 +68,96 @@ function SlidePuzzlePage() {
     }
   };
 
-  const handleFireBaseUpload = () => {
+  const handleFireBaseUpload = async () => {
     setloading(true);
     var ud = uuidv4();
 
-    const storageRef = ref(storage, `/images/slidePuzzle/${ud}`);
-    const uploadTask = uploadBytesResumable(storageRef, image_url);
-
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        const progress =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log("Upload is " + progress + "% done");
-      },
-      (error) => {
-        console.log(error);
-      },
-      () => {
-        console.log("Image uploaded successfully");
-        const downloadURL = getDownloadURL(uploadTask.snapshot.ref);
-        setFireUrl(downloadURL);
-        console.log(downloadURL);
+    if (livelink) {
+      // const slidePuzzleRef = ref1(db, "SlidePuzzle");
+      // const childRef = child(slidePuzzleRef, realTimeDBKey);
+      // const updatedData = {
+      //   url: fbimg,
+      //   best_score: 10000,
+      // };
+      // update(childRef, updatedData)
+      //   .then(() => {
+      //     console.log("Value updated successfully!");
+      //   })
+      //   .catch((error) => {
+      //     console.error("Error updating value:", error);
+      //   });
         
-        push(ref1(db, "SlidePuzzle"), {
-          url: fbimg,
-          best_score: 20000,
-        });
-      }
-    );
-    // if (!livelink) {
-    //   const todoRef = db.ref("SlidePuzzle");
-    //   const todo = {
-    //     url: fbimg,
-    //     best_score: 100000,
-    //   };
-    //   var newKey = todoRef.push(todo).getKey();
-    //   setlivelink("http://update-image.web.app/live/slidepuzzle/" + newKey);
-    //   setpreviewlink("/live/slidepuzzle/" + newKey);
+      // setloading(false);
 
-    //   setloading(false);
-    // } else {
-    //   uploadTask.on(
-    //     "state_changed",
-    //     (snapshot) => {
-    //       const progress =
-    //         (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-    //       console.log("Upload is " + progress + "% done");
-    //     },
-    //     (err) => {
-    //       //catches the errors
-    //       console.log(err);
-    //     },
-    //     () => {
-    //       getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-    //         console.log("Dwarakaaa stored");
-    //         console.log(url);
-    //     });
-    //       // console.log(image_url);
-    //       // var s = storage
-    //       //   .ref("images")
-    //       //   .child(ud)
-    //       //   .putString(image_url, "base64", { contentType: "image/jpg" })
-    //       //   .then((savedImage) => {
-    //       //     savedImage.ref
-    //       //       .getDownloadURL(uploadTask.snapshot.ref)
-    //       //       .then((downUrl) => {
-    //       //         console.log(downUrl);
-    //       //         setFireUrl(downUrl);
-    //       //         const todoRef = db.ref("SlidePuzzle");
-    //       //         const todo = {
-    //       //           url: downUrl,
-    //       //           best_score: 100000,
-    //       //         };
-    //       //         var newKey = todoRef.push(todo).getKey();
-    //       //         setlivelink(
-    //       //           "http://update-image.web.app/live/slidepuzzle/" + newKey
-    //       //         );
-    //       //         setpreviewlink("/live/slidepuzzle/" + newKey);
-    //       //       });
-    //       //     setloading(false);
-    //       //   });
-    //     }
-    //   );
-    // }
+      const storageRef = ref(storage, `/images/slidePuzzle/${ud}`);
+      const uploadTask = uploadBytesResumable(storageRef, image_url);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log("Upload is " + progress + "% done");
+        },
+        (error) => {
+          console.log(error);
+        },
+        async () => {
+          console.log("Image uploaded successfully");
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          setFireUrl(downloadURL);
+          console.log("DWARAKA uploaded url", downloadURL);
+
+          const slidePuzzleRef = ref1(db, "SlidePuzzle");
+          const childRef = child(slidePuzzleRef, realTimeDBKey);
+          const updatedData = {
+            url: downloadURL,
+            best_score: 10000,
+          };
+          update(childRef, updatedData)
+            .then(() => {
+              console.log("Value updated successfully!");
+            })
+            .catch((error) => {
+              console.error("Error updating value:", error);
+            });
+            
+          setloading(false);
+        }
+      );
+      setloading(false);
+    } else {
+      const storageRef = ref(storage, `/images/slidePuzzle/${ud}`);
+      const uploadTask = uploadBytesResumable(storageRef, image_url);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log("Upload is " + progress + "% done");
+        },
+        (error) => {
+          console.log(error);
+        },
+        async () => {
+          console.log("Image uploaded successfully");
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          setFireUrl(downloadURL);
+          console.log("DWARAKA uploaded url", downloadURL);
+
+          const newKey = push(ref1(db, "SlidePuzzle"), {
+            url: downloadURL,
+            best_score: 100000,
+          }).key;
+
+          setlivelink("http://update-image.web.app/live/slidepuzzle/" + newKey);
+          setRealTimeDBKey(newKey);
+          setpreviewlink("/live/slidepuzzle/" + newKey);
+        }
+      );
+      setloading(false);
+    }
   };
   const tourConfig = [
     {
