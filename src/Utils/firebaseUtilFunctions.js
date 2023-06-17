@@ -5,6 +5,7 @@ import {
   push,
   child,
   update,
+  get,
 } from "firebase/database";
 
 export function uploadImageAndGetDownloadURL(image_url, storagePath) {
@@ -63,5 +64,23 @@ export async function addDataToRealTImeDatabase(data, realTimeDBPath) {
       console.error("Error updating value:", error);
       reject(error);
     }
+  });
+}
+
+export function getDataFromRealtimeDatabase(realtimeDataPath) {
+  const todoRef = ref1(db, realtimeDataPath);
+  return new Promise((resolve, reject) => {
+    get(todoRef)
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          resolve(data); // Resolve with the retrieved data
+        } else {
+          resolve(null); // Resolve with null if no data available
+        }
+      })
+      .catch((error) => {
+        reject(error); // Reject with the error if any occurs
+      });
   });
 }

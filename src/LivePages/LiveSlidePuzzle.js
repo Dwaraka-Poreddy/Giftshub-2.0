@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import SlidePuzzle from "../SlidePuzzle/SlidePuzzle";
 import SlidePuzzleAnswer from "../SlidePuzzle/SlidePuzzleAnswer";
-import { auth, db, fStore, storage } from "../firebase";
-import { getDatabase, ref as ref1, update, get, child } from "firebase/database";
-import { useNavigate, useParams } from "react-router-dom";
+import { updateSlidePuzzleWithImage, getDataFromRealtimeDatabase } from "../Utils/firebaseUtilFunctions"
+import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import "./LiveSlidePuzzle.css";
 import Loader from "react-loader-spinner";
@@ -17,43 +16,37 @@ function LiveAnimatedFramePage({ match }) {
   const handlepuzzlescore = (e) => {
     setpuzzlescore(e);
     if (e < bestscore) {
-      const slidePuzzleRef = ref1(db, "SlidePuzzle");
-      const childRef = child(slidePuzzleRef, slug);
-      const updatedData = {
+      const data = {
         url: fbimg,
         best_score: e,
-      };
-      update(childRef, updatedData)
-        .then(() => {
-          console.log("Value updated successfully!");
-        })
-        .catch((error) => {
-          console.error("Error updating value:", error);
-        });
+      }
+      updateSlidePuzzleWithImage(
+        data,
+        "SlidePuzzle",
+        slug
+      );
       setbestscore(e);
       toast.success("You bet your previous best score, Keep playing!");
     }
   };
   useEffect(async () => {
     setloading(true);
-    const todoRef = ref1(db, "/SlidePuzzle/" + slug);
 
-    get(todoRef)
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          var img = snapshot.val().url;
-          setfbimg(img);
-          var bestscore = snapshot.val().best_score;
-          setbestscore(bestscore);
-          console.log("Data from the database:", data);
-        } else {
-          console.log("No data available.");
-        }
-      })
-      .catch((error) => {
-        console.error("Error reading data:", error);
-      });
+    getDataFromRealtimeDatabase(`/SlidePuzzle/${slug}`)
+    .then((data) => {
+      if (data) {
+        var img = data.url;
+        setfbimg(img);
+        var bestscore = data.best_score;
+        setbestscore(bestscore);
+        console.log("Data from the database:", data);
+      } else {
+        console.log("No data available.");
+      }
+    })
+    .catch((error) => {
+      console.error("Error reading data:", error);
+    });
 
     setloading(false);
   }, []);
