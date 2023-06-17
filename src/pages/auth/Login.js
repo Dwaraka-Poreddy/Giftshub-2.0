@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     width: 300,
   },
 }));
-const Login = ({ history }) => {
+const Login = () => {
   const location = useLocation();
   const navigate = useNavigate();
   let dispatch = useDispatch();

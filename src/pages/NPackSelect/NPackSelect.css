@@ -1,0 +1,38 @@
+.npackselectcard {
+  box-shadow: none !important;
+  /* padding: 10px; */
+  border-radius: 5px !important;
+  background-repeat: no-repeat;
+  background-size: auto 100%;
+  background-position: center;
+  border: 0px !important;
+}
+
+.npackselectcardimg {
+  border-radius: 5px;
+  width: auto;
+  height: 100px;
+  opacity: 0;
+}
+
+.npackselectcardtitle {
+  font-family: "Roboto", sans-serif;
+  margin-bottom: 0 !important;
+  margin-top: 0 !important;
+  padding-bottom: 0.5rem;
+  padding-top: 0.5rem;
+  font-size: 18px;
+  background-color: #f95e5e;
+  color: #fff;
+  border-radius: 0 !important;
+}
+.shadow-none {
+  box-shadow: none !important;
+  /* padding: 10px; */
+  border-radius: 5px !important;
+}
+.nselectarrow {
+  font-size: 3rem !important;
+  height: 100px !important;
+  color: #f33f3f !important;
+}

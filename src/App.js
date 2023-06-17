@@ -8,12 +8,13 @@ import { auth } from "./firebase";
 import "react-toastify/dist/ReactToastify.css";
 import { Helmet } from "react-helmet";
 import Error404Page from "./Error404Page";
-const AboutUs = lazy(() => import("./AboutUs"));
+const AboutUs = lazy(() => import("./pages/AboutUs/AboutUs"));
 const LandingPage = lazy(() => import("./LandingPage/LandingPage"));
 const Login = lazy(() => import("./pages/auth/Login"));
 const RegisterComplete = lazy(() => import("./pages/auth/RegisterComplete"));
 const SlidePuzzlePage = lazy(() => import("./SlidePuzzle/SlidePuzzlePage"));
 const LiveSlidePuzzle = lazy(() => import("./LivePages/LiveSlidePuzzle"));
+const Home = lazy(() => import("./pages/Home/Home"));
 // const UserPacksPage = lazy(() => import("./UserPages/UserPacksPage"));
 // const ThreeDCarouselPage = lazy(() =>
 //   import("./ThreeDCarousel/ThreeDCarouselPage")
@@ -81,7 +82,6 @@ const LiveSlidePuzzle = lazy(() => import("./LivePages/LiveSlidePuzzle"));
 // const LiveCollage = lazy(() => import("./LivePages/LiveCollage"));
 // const SevenDayHome = lazy(() => import("./pages/SevenDayHome"));
 // const ValentineHome = lazy(() => import("./pages/ValentineHome"));
-// const Home = lazy(() => import("./pages/Home"));
 
 
 // const ForgotPassword = lazy(() => import("./pages/auth/ForgotPassword"));
@@ -196,90 +196,90 @@ const App = () => {
           {/* <Route
             
             path="/threedcarouselpage"
-            component={<ThreeDCarouselPage />}
+            element={<ThreeDCarouselPage />}
           />
           <Route
             
             path="/violetgreetingcard"
-            component={<VioletGreetingCard />}
+            element={<VioletGreetingCard />}
           /> */ }
           {/* <Route
             
             path="/envelopegreetingcard"
-            component={<EnvelopeGreetingCard />}
+            element={<EnvelopeGreetingCard />}
           />
           {{/* <Route
             
             path="/browngreetingcard"
-            component={<BrownGreetingCard />}
+            element={<BrownGreetingCard />}
           /> */ }
-          {/* <Route  path="/samplegifts" component={<SampleGifts />} />
-          <Route  path="/challengePage" component={<ChallengePage />} />
-          <Route  path="/challenge" component={<Challenge />} /> */ }
+          {/* <Route  path="/samplegifts" element={<SampleGifts />} />
+          <Route  path="/challengePage" element={<ChallengePage />} />
+          <Route  path="/challenge" element={<Challenge />} /> */ }
           <Route path="/aboutus" element={<AboutUs /> } />
-          {/* <Route  path="/aboutquizpage" component={<AboutQuizPage />} />
-          <Route  path="/journeypage" component={<JourneyPage />} />
-          <Route  path="/calendarpage" component={<CalendarPage />} />
-          <Route  path="/swatchbookpage" component={<SwatchBookPage />} /> */ }
+          {/* <Route  path="/aboutquizpage" element={<AboutQuizPage />} />
+          <Route  path="/journeypage" element={<JourneyPage />} />
+          <Route  path="/calendarpage" element={<CalendarPage />} />
+          <Route  path="/swatchbookpage" element={<SwatchBookPage />} /> */ }
           <Route  path="/" element={<LandingPage />} />
           <Route  path="/login" element={<Login />} />
           <Route  path="/register/complete" element={<RegisterComplete />} />
           <Route  path="/slidepuzzlepage" element={<SlidePuzzlePage />} />
           <Route path="*" element={<Error404Page />} />
-          {/* <Route  path="/animatedframe" component={<AnimatedFrame />} />
-          <Route  path="/userpackspage" component={<UserPacksPage />} />
-          <Route  path="/home" component={<Home />} />
-          <Route  path="/recommendedhome" component={<SevenDayHome />} />
-          <Route  path="/valentinehome" component={<ValentineHome />} />
-          <Route  path="/ContinuePack/:slug" component={<ContinuePack />} />
-          <Route  path="/forgot/password" component={<ForgotPassword />} />
-          <Route  path="/memorygamepage" component={<MemoryGamePage />} />
-          <Route  path="/collagepage" component={<CollagePage />} />
-          <Route  path="/newspaperpage" component={<NewsPaperPage />} />
-          <Route  path="/cubespage" component={<CubesPage />} />
-          <Route  path="/honeycombpage" component={<HoneyCombPage />} />
-          <Route  path="/magazinepage" component={<MagazinePage />} /> */ }
+          <Route  path="/home" element={<Home />} />
+          {/* <Route  path="/animatedframe" element={<AnimatedFrame />} />
+          <Route  path="/userpackspage" element={<UserPacksPage />} />
+          <Route  path="/recommendedhome" element={<SevenDayHome />} />
+          <Route  path="/valentinehome" element={<ValentineHome />} />
+          <Route  path="/ContinuePack/:slug" element={<ContinuePack />} />
+          <Route  path="/forgot/password" element={<ForgotPassword />} />
+          <Route  path="/memorygamepage" element={<MemoryGamePage />} />
+          <Route  path="/collagepage" element={<CollagePage />} />
+          <Route  path="/newspaperpage" element={<NewsPaperPage />} />
+          <Route  path="/cubespage" element={<CubesPage />} />
+          <Route  path="/honeycombpage" element={<HoneyCombPage />} />
+          <Route  path="/magazinepage" element={<MagazinePage />} /> */ }
           {/* <Route
             
             path="/opengreetingcardpage"
-            component={<OpenGreetingCardPage />}
+            element={<OpenGreetingCardPage />}
           />
           <Route
             
             path="/envelopegreetingcardpage"
-            component={<EnvelopeGreetingCardPage />}
+            element={<EnvelopeGreetingCardPage />}
           />
-          <Route  path="/specialcardpage" component={<SpecialCardPage />} />
+          <Route  path="/specialcardpage" element={<SpecialCardPage />} />
           <Route
             
             path="/splitwallimagePage"
-            component={<SplitWallImagePage />}
+            element={<SplitWallImagePage />}
           /> */ }
-          {/* <Route  path="/threedimagepage" component={<ThreeDImagePage />} />
+          {/* <Route  path="/threedimagepage" element={<ThreeDImagePage />} />
           <Route
             
             path="/animatedframePage"
-            component={<AnimatedFramePage />}
+            element={<AnimatedFramePage />}
           />
           <Route
             
             path="/live/threedcarousel/:slug"
-            component={<LiveThreeDCarousel />}
+            element={<LiveThreeDCarousel />}
           />
-          <Route  path="/live/challenge/:slug" component={<LiveChallenge />} />
-          <Route  path="/live/aboutquiz/:slug" component={<LiveAboutQuiz />} />
-          <Route  path="/live/journey/:slug" component={<LiveJourney />} />
-          <Route  path="/live/calendar/:slug" component={<LiveCalendar />} />
+          <Route  path="/live/challenge/:slug" element={<LiveChallenge />} />
+          <Route  path="/live/aboutquiz/:slug" element={<LiveAboutQuiz />} />
+          <Route  path="/live/journey/:slug" element={<LiveJourney />} />
+          <Route  path="/live/calendar/:slug" element={<LiveCalendar />} />
           <Route
             
             path="/live/swatchbook/:slug"
-            component={<LiveSwatchBook />}
+            element={<LiveSwatchBook />}
           />
-          <Route  path="/live/splitwall/:slug" component={<LiveSplitWall />} /> */ }
+          <Route  path="/live/splitwall/:slug" element={<LiveSplitWall />} /> */ }
           {/* <Route
             
             path="/live/specialcard/:slug"
-            component={<LiveSpecialCard />}
+            element={<LiveSpecialCard />}
           /> */ }
           <Route
             
@@ -289,127 +289,127 @@ const App = () => {
           {/* <Route
             
             path="/live/threedimage/:slug"
-            component={<LiveThreeDImage />}
+            element={<LiveThreeDImage />}
           /> */ }
-          {/* <Route  path="/live/newspaper/:slug" component={<LiveNewsPaper />} /> */ }
+          {/* <Route  path="/live/newspaper/:slug" element={<LiveNewsPaper />} /> */ }
           {/* <Route
             
             path="/live/opengreetingcard/:slug"
-            component={<LiveOpenGreetingCard />}
+            element={<LiveOpenGreetingCard />}
           /> */ }
           {/* <Route
             
             path="/live/envelopegreetingcard/:slug"
-            component={<LiveEnvelopeGreetingCard />}
+            element={<LiveEnvelopeGreetingCard />}
           /> */ }
-          {/* <Route  path="/live/honeycomb/:slug" component={<LiveHoneyComb />} />
-          <Route  path="/live/cubes/:slug" component={<LiveCubesPage />} /> */ }
+          {/* <Route  path="/live/honeycomb/:slug" element={<LiveHoneyComb />} />
+          <Route  path="/live/cubes/:slug" element={<LiveCubesPage />} /> */ }
           {/* <Route
             
             path="/live/memorygame/:slug"
-            component={<LiveMemoryGame />}
+            element={<LiveMemoryGame />}
           /> */ }
-          {/* <Route  path="/live/collage/:slug" component={<LiveCollage />} />
+          {/* <Route  path="/live/collage/:slug" element={<LiveCollage />} />
           <Route
             
            path="/live/animatedframe/:slug"
-           component={<LiveAnimatedFramePage />}
+           element={<LiveAnimatedFramePage />}
           /> */ }
-         {/* <Route  path="/live/magazine/:slug" component={<LiveMagazine />} />
+         {/* <Route  path="/live/magazine/:slug" element={<LiveMagazine />} />
            <Route
            
              path="/scheduledlive/aboutquiz/:id/:slug"
-             component={<ScheduledLiveAboutQuiz />}
+             element={<ScheduledLiveAboutQuiz />}
           /> */ }
           {/* <Route
             
             path="/scheduledlive/challenge/:id/:slug"
-            component={<ScheduledLiveChallenge />}
+            element={<ScheduledLiveChallenge />}
           />
           <Route
             
             path="/scheduledlive/honeycomb/:id/:slug"
-            component={<ScheduledLiveHoneyComb />}
+            element={<ScheduledLiveHoneyComb />}
           />
           <Route
             
             path="/scheduledlive/magazine/:id/:slug"
-            component={<ScheduledLiveMagazine />}
+            element={<ScheduledLiveMagazine />}
           />
           <Route
             
             path="/scheduledlive/threedcarousel/:id/:slug"
-            component={<ScheduledLiveThreeDCarousel />}
+            element={<ScheduledLiveThreeDCarousel />}
           />
           <Route
             
             path="/scheduledlive/threedimage/:id/:slug"
-            component={<ScheduledLiveThreeDImagePage />}
+            element={<ScheduledLiveThreeDImagePage />}
           />
           <Route
             
             path="/scheduledlive/animatedframe/:id/:slug"
-            component={<ScheduledLiveAnimatedFrame />}
+            element={<ScheduledLiveAnimatedFrame />}
           /> */ }
           {/* <Route
             
             path="/scheduledlive/specialcard/:id/:slug"
-            component={<ScheduledLiveSpecialCard />}
+            element={<ScheduledLiveSpecialCard />}
           />
           <Route
             
             path="/scheduledlive/swatchbook/:id/:slug"
-            component={<ScheduledLiveSwatchBook />}
+            element={<ScheduledLiveSwatchBook />}
           />
           <Route
             
             path="/scheduledlive/journey/:id/:slug"
-            component={<ScheduledLiveJourney />}
+            element={<ScheduledLiveJourney />}
           />
           <Route
             
             path="/scheduledlive/newspaper/:id/:slug"
-            component={<ScheduledLiveNewsPaper />}
+            element={<ScheduledLiveNewsPaper />}
           />
           <Route
             
             path="/scheduledlive/cubes/:id/:slug"
-            component={<ScheduledLiveCubes />}
+            element={<ScheduledLiveCubes />}
           />
           <Route
             
             path="/scheduledlive/main/:slug"
-            component={<ScheduledLiveMainPage />}
+            element={<ScheduledLiveMainPage />}
           />
           <Route
             
             path="/scheduledlive/opengreetingcard/:id/:slug"
-            component={<ScheduledLiveOpenGreetCard />}
+            element={<ScheduledLiveOpenGreetCard />}
           /> */ }
           {/* <Route
             
             path="/scheduledlive/envelopegreetingcard/:id/:slug"
-            component={<ScheduledLiveEnvelopeGreetCard />}
+            element={<ScheduledLiveEnvelopeGreetCard />}
           />
           <Route
             
             path="/scheduledlive/slidepuzzle/:id/:slug"
-            component={<ScheduledLiveSlidePuzzle />}
+            element={<ScheduledLiveSlidePuzzle />}
           />
           <Route
             
             path="/scheduledlive/memorygame/:id/:slug"
-            component={<ScheduledLiveMemoryGame />}
+            element={<ScheduledLiveMemoryGame />}
           />
           <Route
             
             path="/scheduledlive/collage/:id/:slug"
-            component={<ScheduledLiveCollage />}
+            element={<ScheduledLiveCollage />}
           />
           <Route
             
             path="/scheduledlive/calendar/:id/:slug"
-            component={<ScheduledLiveCalendar />}
+            element={<ScheduledLiveCalendar />}
           /> */ }
         </Routes>
       </Suspense>

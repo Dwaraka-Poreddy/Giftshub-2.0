@@ -1,5 +1,5 @@
 import React from "react";
-import NavBar from "./NavBars/NavBar";
+import NavBar from "../../NavBars/NavBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faFacebookF,
@@ -9,7 +9,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import { Helmet } from "react-helmet";
 import "./AboutUs.css";
-import Footer from "./Footers/Footer";
+import Footer from "../../Footers/Footer";
 export default function AboutUs() {
   return (
     <div>
@@ -36,7 +36,7 @@ export default function AboutUs() {
           <div className="card">
             <div className="card-image">
               <img
-                src={require("./Images/SrinivasKonduri.png")}
+                src={require("../../Images/SrinivasKonduri.png")}
                 alt="profile one"
                 id="srinivaskonduri"
               />
@@ -89,7 +89,7 @@ export default function AboutUs() {
           <div className="card">
             <div className="card-image">
               <img
-                src={require("./Images/DwarakaPoreddy.png")}
+                src={require("../../Images/DwarakaPoreddy.png")}
                 alt="profile one"
                 id="dwarakaporeddy"
               />
