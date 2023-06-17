@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
+import { makeStyles } from '@mui/styles';
+import TextField from '@mui/material/TextField';
 import HeaderBtn from "../Studio/HeaderBtn";
 import { Mail, Twitter, WhatsApp, Facebook, Image, Create } from '@mui/icons-material';
 import emailjs from "emailjs-com";

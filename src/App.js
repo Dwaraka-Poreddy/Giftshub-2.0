@@ -12,6 +12,7 @@ const AboutUs = lazy(() => import("./AboutUs"));
 const LandingPage = lazy(() => import("./LandingPage/LandingPage"));
 const Login = lazy(() => import("./pages/auth/Login"));
 const RegisterComplete = lazy(() => import("./pages/auth/RegisterComplete"));
+const SlidePuzzlePage = lazy(() => import("./SlidePuzzle/SlidePuzzlePage"));
 // const UserPacksPage = lazy(() => import("./UserPages/UserPacksPage"));
 // const ThreeDCarouselPage = lazy(() =>
 //   import("./ThreeDCarousel/ThreeDCarouselPage")
@@ -68,7 +69,6 @@ const RegisterComplete = lazy(() => import("./pages/auth/RegisterComplete"));
 // const LiveThreeDImage = lazy(() => import("./LivePages/LiveThreeDImage"));
 // const LiveSlidePuzzle = lazy(() => import("./LivePages/LiveSlidePuzzle"));
 // const LiveSpecialCard = lazy(() => import("./LivePages/LiveSpecialCard"));
-// const SlidePuzzlePage = lazy(() => import("./SlidePuzzle/SlidePuzzlePage"));
 // const HoneyCombPage = lazy(() => import("./HoneyComb/HoneyCombPage"));
 // const ThreeDImagePage = lazy(() => import("./ThreeDImage/ThreeDImagePage"));
 // const LiveCubesPage = lazy(() => import("./LivePages/LiveCubesPage"));
@@ -224,6 +224,8 @@ const App = () => {
           <Route  path="/" element={<LandingPage />} />
           <Route  path="/login" element={<Login />} />
           <Route  path="/register/complete" element={<RegisterComplete />} />
+          <Route  path="/slidepuzzlepage" element={<SlidePuzzlePage />} />
+          <Route path="*" element={<Error404Page />} />
           {/* <Route  path="/animatedframe" component={<AnimatedFrame />} />
           <Route  path="/userpackspage" component={<UserPacksPage />} />
           <Route  path="/home" component={<Home />} />
@@ -235,7 +237,6 @@ const App = () => {
           <Route  path="/collagepage" component={<CollagePage />} />
           <Route  path="/newspaperpage" component={<NewsPaperPage />} />
           <Route  path="/cubespage" component={<CubesPage />} />
-          <Route  path="/slidepuzzlepage" component={<SlidePuzzlePage />} />
           <Route  path="/honeycombpage" component={<HoneyCombPage />} />
           <Route  path="/magazinepage" component={<MagazinePage />} /> */ }
           {/* <Route
@@ -409,8 +410,7 @@ const App = () => {
             
             path="/scheduledlive/calendar/:id/:slug"
             component={<ScheduledLiveCalendar />}
-          />
-          <Route path="*" component={<Error404Page />} /> */ }
+          /> */ }
         </Routes>
       </Suspense>
     </div>

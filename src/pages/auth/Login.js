@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import {
-  getAuth,
   signInWithEmailAndPassword,
   signInWithPopup,
   GoogleAuthProvider,
   sendSignInLinkToEmail
 } from "firebase/auth";
-import { app } from "../../firebase";
+import { auth } from "../../firebase";
 import { toast } from "react-toastify";
 import { MailOutlineOutlined, GoogleOutlined } from '@mui/icons-material';
 import { useNavigate, useLocation } from "react-router-dom";
@@ -30,7 +29,6 @@ const useStyles = makeStyles((theme) => ({
 const Login = ({ history }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const auth = getAuth();
   let dispatch = useDispatch();
 
   const [email, setEmail] = useState("");

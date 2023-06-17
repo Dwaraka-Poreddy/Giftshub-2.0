@@ -6,14 +6,13 @@ import React, {
   useEffect,
 } from "react";
 import HeaderBtn from "../Studio/HeaderBtn";
-import Modal from "@material-ui/core/Modal";
+import { Modal, Fab } from "@mui/material";
 import ReactCrop from "react-image-crop";
-import { makeStyles } from "@material-ui/core/styles";
-import { Image, Close } from '@mui/icons-material';
-import Fab from "@material-ui/core/Fab";
+import { makeStyles } from "@mui/styles";
+import { Image, Close } from "@mui/icons-material";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-image-crop/dist/ReactCrop.css";
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles({
   paper: {
     borderRadius: "5px",
     width: "80vw",
@@ -27,14 +26,64 @@ const useStyles = makeStyles((theme) => ({
     border: null,
     backgroundColor: "#009dd9",
     // overflow: "auto",
-    padding: theme.spacing(0, 0, 0),
+    padding: "0 0 0 0",
   },
   DelBut: {
     position: "sticky",
-    bottom: theme.spacing(142),
-    left: theme.spacing(250),
+    bottom: "142",
+    left: "250",
   },
-}));
+});
+
+// function generateDownload(canvas, crop) {
+//   if (!crop || !canvas) {
+//     return;
+//   }
+
+//   canvas.toBlob(
+//     (blob) => {
+//       const previewUrl = window.URL.createObjectURL(blob);
+
+//       const anchor = document.createElement('a');
+//       anchor.download = 'cropPreview.png';
+//       anchor.href = URL.createObjectURL(blob);
+//       anchor.click();
+
+//       window.URL.revokeObjectURL(previewUrl);
+//     },
+//     'image/png',
+//     1
+//   );
+// }
+
+function setCanvasImage(image, canvas, crop) {
+  if (!crop || !canvas || !image) {
+    return;
+  }
+
+  const scaleX = image.naturalWidth / image.width;
+  const scaleY = image.naturalHeight / image.height;
+  const ctx = canvas.getContext("2d");
+  const pixelRatio = window.devicePixelRatio;
+
+  canvas.width = crop.width * pixelRatio * scaleX;
+  canvas.height = crop.height * pixelRatio * scaleY;
+
+  ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+  ctx.imageSmoothingQuality = "high";
+
+  ctx.drawImage(
+    image,
+    crop.x * scaleX,
+    crop.y * scaleY,
+    crop.width * scaleX,
+    crop.height * scaleY,
+    0,
+    0,
+    crop.width * scaleX,
+    crop.height * scaleY
+  );
+}
 
 function CropPage({
   send,
@@ -44,55 +93,27 @@ function CropPage({
   setopencrop,
   opencrop,
 }) {
-  const def = {
-    unit: "%",
-    width: 50,
-    aspect: aspect_ratio,
-  };
-
   const classes = useStyles();
-
   const [upImg, setUpImg] = useState(send);
   const previewCanvasRef = useRef(null);
   const imgRef = useRef(null);
   const pixelRatio = window.devicePixelRatio || 1;
   const [completedCrop, setCompletedCrop] = useState(null);
+  const def = {
+    unit: "%",
+    width: 50,
+    aspect: aspect_ratio,
+  };
   const [crop, setCrop] = useState(def);
+
   useEffect(() => {
-    if (!completedCrop || !previewCanvasRef.current || !imgRef.current) {
-      return;
-    }
-
-    const image = imgRef.current;
-    const canvas = previewCanvasRef.current;
-    const crop = completedCrop;
-
-    const scaleX = image.naturalWidth / image.width;
-    const scaleY = image.naturalHeight / image.height;
-    const ctx = canvas.getContext("2d");
-
-    canvas.width = crop.width * pixelRatio;
-    canvas.height = crop.height * pixelRatio;
-
-    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-    ctx.imageSmoothingQuality = "high";
-
-    ctx.drawImage(
-      image,
-      crop.x * scaleX,
-      crop.y * scaleY,
-      crop.width * scaleX,
-      crop.height * scaleY,
-      0,
-      0,
-      crop.width,
-      crop.height
-    );
+    setCanvasImage(imgRef.current, previewCanvasRef.current, completedCrop);
   }, [completedCrop]);
 
   const onLoad = useCallback((img) => {
     imgRef.current = img;
   }, []);
+
   function getResizedCanvas(canvas, newWidth, newHeight) {
     const tmpCanvas = document.createElement("canvas");
     tmpCanvas.width = newWidth;
@@ -115,27 +136,27 @@ function CropPage({
   }
   function generateDownload(previewCanvas, crop) {
     if (!crop || !previewCanvas) {
-      return;
+      return Promise.reject("Invalid arguments");
     }
 
-    const canvas = getResizedCanvas(previewCanvas, crop.width, crop.height);
-    var base64Image = canvas.toDataURL("image/jpeg", 1.0);
-    setfbimg(base64Image);
+    return new Promise((resolve, reject) => {
+      const canvas = getResizedCanvas(previewCanvas, crop.width, crop.height);
+      var base64Image = canvas.toDataURL("image/jpeg", 1.0);
+      setfbimg(base64Image);
 
-    var base64Img = base64Image.replace("data:image/jpeg;base64,", "");
-    setimage_url(base64Img);
+      var base64Img = base64Image.replace("data:image/jpeg;base64,", "");
+      // setimage_url(base64Img);
 
-    canvas.toBlob(
-      (blob) => {
-        const previewUrl = window.URL.createObjectURL(blob);
+      canvas.toBlob(
+        (blob) => {
+          resolve(blob);
+        },
+        "image/png",
+        1
+      );
 
-        window.URL.revokeObjectURL(previewUrl);
-      },
-      "image/png",
-      1
-    );
-
-    setopencrop(false);
+      setopencrop(false);
+    });
   }
 
   return (
@@ -166,7 +187,7 @@ function CropPage({
                     maxHeight: "450px",
                     width: "100%",
                   }}
-                  src={upImg}
+                  src={send}
                   onImageLoaded={onLoad}
                   crop={crop}
                   onChange={(c) => setCrop(c)}
@@ -176,10 +197,12 @@ function CropPage({
               <div style={{ display: "none" }}>
                 <canvas
                   ref={previewCanvasRef}
-                  style={{
-                    width: Math.round(completedCrop?.width ?? 0),
-                    height: Math.round(completedCrop?.height ?? 0),
-                  }}
+                  style={
+                    {
+                      // width: Math.round(completedCrop?.width ?? 0),
+                      // height: Math.round(completedCrop?.height ?? 0),
+                    }
+                  }
                 />
               </div>
               <div>
@@ -191,7 +214,15 @@ function CropPage({
                         generateDownload(
                           previewCanvasRef.current,
                           completedCrop
-                        );
+                        )
+                          .then((blob) => {
+                            console.log("Dwaraka BLOB");
+                            console.log(blob);
+                            setimage_url(blob)
+                          })
+                          .catch((error) => {
+                            console.log("Dwaraka NO BLOB");
+                          });
                       }}
                       Icon={Image}
                       title=" Use cropped image"
