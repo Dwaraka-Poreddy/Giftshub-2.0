@@ -1,6 +1,5 @@
-import { makeStyles } from "@material-ui/core/styles";
-import ImageIcon from "@material-ui/icons/Image";
-import VisibilityIcon from "@material-ui/icons/Visibility";
+import { makeStyles } from "@mui/styles";
+import { FlightTakeoff, Image, Share, Visibility } from "@mui/icons-material";
 import React, { useEffect, useState } from "react";
 import Loader from "react-loader-spinner";
 import { useSelector } from "react-redux";
@@ -9,7 +8,16 @@ import { toast } from "react-toastify";
 import Tour from "reactour";
 import { v4 as uuidv4 } from "uuid";
 import "../Buttons.css";
-import firebase, { storage } from "../firebase";
+import { auth, db, fStore, storage } from "../firebase";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import {
+  getDatabase,
+  ref as ref1,
+  push,
+  child,
+  update,
+  get,
+} from "firebase/database";
 import HeaderBtn from "../Studio/HeaderBtn";
 import Copy from "../Utils/Copy";
 import CropPage from "../Utils/CropPage";
@@ -58,40 +66,57 @@ function ScheduledSlidePuzzlePage({
   useEffect(() => {
     setCLoading(true);
     if (edit.text != "") {
-      const todoRef = firebase
-        .database()
-        .ref("/SlidePuzzle/" + edit.text)
-        .once("value")
+      const todoRef = ref1(db, "/SlidePuzzle/" + edit.text);
+
+      get(todoRef)
         .then((snapshot) => {
-          var img = snapshot.val().url;
-          setfbimg(img);
-          setCLoading(false);
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            var img = snapshot.val().url;
+            setfbimg(img);
+            console.log("Data from the database:", data);
+          } else {
+            console.log("No data available.");
+          }
+        })
+        .catch((error) => {
+          console.error("Error reading data:", error);
         });
+      setCLoading(false);
     } else {
       setCLoading(false);
     }
   }, []);
   const onSelectFile = (e) => {
-    setsend(window.URL.createObjectURL(e.target.files[0]));
-    setshowoptions(false);
-    setopencrop(true);
+    if (e.target.files && e.target.files.length > 0) {
+      const reader = new FileReader();
+      reader.addEventListener("load", () => setSend(reader.result));
+      reader.readAsDataURL(e.target.files[0]);
+      setopencrop(true);
+    }
   };
 
   const handleFireBaseUpload = async () => {
     setloading(true);
     var ud = uuidv4();
-    console.log(ud);
 
     const uploadTask = await storage
       .ref(`/images/${imageAsFile.name}`)
       .put(imageAsFile);
     if (edit.text != "") {
-      const todoRef = firebase.database().ref("SlidePuzzle/" + edit.text);
-      const todo = {
+      const slidePuzzleRef = ref1(db, "SlidePuzzle/" + edit.text);
+      const updatedData = {
         url: fbimg,
         best_score: 100000,
       };
-      todoRef.update(todo);
+      update(childRef, slidePuzzleRef)
+        .then(() => {
+          console.log("Value updated successfully!");
+        })
+        .catch((error) => {
+          console.error("Error updating value:", error);
+        });
+      
       setlivelink(
         "http://update-image.web.app/scheduledlive/slidepuzzle/" +
           edit.text +
@@ -108,7 +133,10 @@ function ScheduledSlidePuzzlePage({
       };
       var newKey = await todoRef.push(todo).getKey();
       setlivelink(
-        "http://update-image.web.app/scheduledlive/slidepuzzle/" + newKey + "/" + slug
+        "http://update-image.web.app/scheduledlive/slidepuzzle/" +
+          newKey +
+          "/" +
+          slug
       );
       setpreviewlink("/scheduledlive/slidepuzzle/" + newKey + "/" + slug);
       const snapshot = await database
@@ -120,7 +148,10 @@ function ScheduledSlidePuzzlePage({
       const data = snapshot.data().array_data;
       const newdata = data;
       newdata[step].url =
-        "http://update-image.web.app/scheduledlive/slidepuzzle/" + newKey + "/" + slug;
+        "http://update-image.web.app/scheduledlive/slidepuzzle/" +
+        newKey +
+        "/" +
+        slug;
 
       await database
         .collection("n-day-pack")
@@ -133,12 +164,15 @@ function ScheduledSlidePuzzlePage({
           },
           { merge: true }
         );
-      await database.collection("Livelinks").doc(slug).update(
-        {
-          array_data: newdata,
-        },
-        { merge: true }
-      );
+      await database
+        .collection("Livelinks")
+        .doc(slug)
+        .update(
+          {
+            array_data: newdata,
+          },
+          { merge: true }
+        );
       toast.success("Slide Puzzle successfully added to your pack");
       getDoc();
       setloading(false);
@@ -248,7 +282,6 @@ function ScheduledSlidePuzzlePage({
                     name="LocalfileInput"
                     multiple
                     type="file"
-                    accept="image/*"
                     onChange={onSelectFile}
                     onClick={(event) => {
                       event.target.value = null;
@@ -265,7 +298,7 @@ function ScheduledSlidePuzzlePage({
                     />
                   ) : null}
                   <label htmlFor="LocalfileInput">
-                    <HeaderBtn Icon={ImageIcon} title="Change  image " />
+                    <HeaderBtn Icon={Image} title="Change  image " />
                   </label>
                 </center>
               </div>
@@ -314,7 +347,7 @@ function ScheduledSlidePuzzlePage({
                       style={{ marginTop: "20px" }}
                     >
                       <Link class="logo" to={previewlink} target="_blank">
-                        <HeaderBtn Icon={VisibilityIcon} title="Preview " />
+                        <HeaderBtn Icon={Visibility} title="Preview " />
                       </Link>
                     </div>
                     <div
