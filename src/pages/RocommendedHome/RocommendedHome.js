@@ -122,7 +122,7 @@ function RocommendedHome({ history }) {
   const [imageAsFile, setImageAsFile] = useState("");
   const [image_url, setimage_url] = useState();
   const [wishes, setwishes] = useState("");
-  const [Bday_date, setBday_date] = useState(new Date());
+  const [Bday_date, setBday_date] = useState();
 
   $(document).ready(function() {
     $(".card").hover(
@@ -767,7 +767,27 @@ function RocommendedHome({ history }) {
                         </div>
                         <br />
                         <center>
-                          {!Bday_date ? (
+                          {Bday_date &&
+                          Folder_name &&
+                          From_name &&
+                          To_name &&
+                          wishes &&
+                          fbimg ? (
+                            <>
+                              <input
+                                style={{ display: "none" }}
+                                id="submit"
+                                type="submit"
+                                value="Create 7 day pack"
+                              />
+                              <label htmlFor="submit">
+                                <button className="modal-button">
+                                  {" "}
+                                  Create {days_page.days_redirect} day pack
+                                </button>
+                              </label>
+                            </>
+                          ) : (
                             <>
                               <input
                                 disabled
@@ -785,21 +805,6 @@ function RocommendedHome({ history }) {
                                   style={{ cursor: "default" }}
                                   className="modal-button"
                                 >
-                                  {" "}
-                                  Create {days_page.days_redirect} day pack
-                                </button>
-                              </label>
-                            </>
-                          ) : (
-                            <>
-                              <input
-                                style={{ display: "none" }}
-                                id="submit"
-                                type="submit"
-                                value="Create 7 day pack"
-                              />
-                              <label htmlFor="submit">
-                                <button className="modal-button">
                                   {" "}
                                   Create {days_page.days_redirect} day pack
                                 </button>

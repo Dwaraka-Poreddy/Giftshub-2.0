@@ -643,12 +643,12 @@ export default function LandingPage() {
                   <div class="slidehoverbtnouter">
                     <div
                       onClick={() => {
-                        // dispatch({
-                        //   type: "REDIRECT_USER",
-                        //   payload: {
-                        //     days_redirect: "n",
-                        //   },
-                        // });
+                        dispatch({
+                          type: "REDIRECT_USER",
+                          payload: {
+                            days_redirect: "Valentines",
+                          },
+                        });
                       }}
                       class="slidehoverbtnbutton"
                     >
