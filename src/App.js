@@ -18,6 +18,7 @@ const Home = lazy(() => import("./pages/Home/Home"));
 const ContinuePack = lazy(() => import("./pages/ContinuePack/ContinuePack"));
 const RocommendedHome = lazy(() => import("./pages/RocommendedHome/RocommendedHome"));
 const ValentineHome = lazy(() => import("./pages/ValentineHome"));
+const SampleGifts = lazy(() => import("./SampleGifts/SampleGifts"));
 // const UserPacksPage = lazy(() => import("./UserPages/UserPacksPage"));
 // const ThreeDCarouselPage = lazy(() =>
 //   import("./ThreeDCarousel/ThreeDCarouselPage")
@@ -37,7 +38,6 @@ const ValentineHome = lazy(() => import("./pages/ValentineHome"));
 // const JourneyPage = lazy(() => import("./Journey/JourneyPage"));
 // const SwatchBookPage = lazy(() => import("./SwatchBook/SwatchBookPage"));
 // const CalendarPage = lazy(() => import("./Calendar/CalandarPage"));
-// const SampleGifts = lazy(() => import("./SampleGifts/SampleGifts"));
 // const MagazinePage = lazy(() => import("./Magazine/MagazinePage"));
 // const NewsPaperPage = lazy(() => import("./NewsPaper/NewsPaperPage"));
 // const CollagePage = lazy(() => import("./Collage/CollagePage"));
@@ -211,10 +211,11 @@ const App = () => {
             path="/browngreetingcard"
             element={<BrownGreetingCard />}
           /> */ }
-          {/* <Route  path="/samplegifts" element={<SampleGifts />} />
+          {/* 
           <Route  path="/challengePage" element={<ChallengePage />} />
           <Route  path="/challenge" element={<Challenge />} /> */ }
           <Route path="/aboutus" element={<AboutUs /> } />
+          <Route  path="/samplegifts" element={<SampleGifts />} />
           {/* <Route  path="/aboutquizpage" element={<AboutQuizPage />} />
           <Route  path="/journeypage" element={<JourneyPage />} />
           <Route  path="/calendarpage" element={<CalendarPage />} />
