@@ -47,7 +47,6 @@ function ScheduledSlidePuzzlePage({
   let { edit } = useSelector((state) => ({ ...state }));
   const [Cloading, setCLoading] = useState(false);
   const [loading, setloading] = useState(false);
-  const database = firebase.firestore();
   const secclasses = secuseStyles();
   const [showshare, setshowshare] = useState(false);
   const [livelink, setlivelink] = useState();
@@ -56,7 +55,7 @@ function ScheduledSlidePuzzlePage({
   const [imageAsFile, setImageAsFile] = useState("");
   const [image_url, setimage_url] = useState();
   const [opencrop, setopencrop] = useState(false);
-  const [send, setsend] = useState();
+  const [send, setSend] = useState();
   const { user } = useSelector((state) => ({ ...state }));
   const [fbimg, setfbimg] = useState(
     "https://firebasestorage.googleapis.com/v0/b/update-image.appspot.com/o/imp%2Ftom-and-jerry-hd-background.jpg?alt=media&token=a5fb8323-7899-46d7-8119-16b69e1e2531"
@@ -101,86 +100,87 @@ function ScheduledSlidePuzzlePage({
     setloading(true);
     var ud = uuidv4();
 
-    const uploadTask = await storage
-      .ref(`/images/${imageAsFile.name}`)
-      .put(imageAsFile);
-    if (edit.text != "") {
-      const slidePuzzleRef = ref1(db, "SlidePuzzle/" + edit.text);
-      const updatedData = {
-        url: fbimg,
-        best_score: 100000,
-      };
-      update(childRef, slidePuzzleRef)
-        .then(() => {
-          console.log("Value updated successfully!");
-        })
-        .catch((error) => {
-          console.error("Error updating value:", error);
-        });
+    // const uploadTask = await storage
+    //   .ref(`/images/${imageAsFile.name}`)
+    //   .put(imageAsFile);
+    // if (edit.text != "") {
+    //   const slidePuzzleRef = ref1(db, "SlidePuzzle/" + edit.text);
+    //   const updatedData = {
+    //     url: fbimg,
+    //     best_score: 100000,
+    //   };
+    //   update(childRef, slidePuzzleRef)
+    //     .then(() => {
+    //       console.log("Value updated successfully!");
+    //     })
+    //     .catch((error) => {
+    //       console.error("Error updating value:", error);
+    //     });
       
-      setlivelink(
-        "http://update-image.web.app/scheduledlive/slidepuzzle/" +
-          edit.text +
-          "/" +
-          slug
-      );
-      setpreviewlink("/scheduledlive/slidepuzzle/" + edit.text + "/" + slug);
-      setloading(false);
-    } else if (!livelink) {
-      const todoRef = firebase.database().ref("SlidePuzzle");
-      const todo = {
-        url: fbimg,
-        best_score: 100000,
-      };
-      var newKey = await todoRef.push(todo).getKey();
-      setlivelink(
-        "http://update-image.web.app/scheduledlive/slidepuzzle/" +
-          newKey +
-          "/" +
-          slug
-      );
-      setpreviewlink("/scheduledlive/slidepuzzle/" + newKey + "/" + slug);
-      const snapshot = await database
-        .collection("n-day-pack")
-        .doc(`${user.uid}`)
-        .collection("giftshub")
-        .doc(slug)
-        .get();
-      const data = snapshot.data().array_data;
-      const newdata = data;
-      newdata[step].url =
-        "http://update-image.web.app/scheduledlive/slidepuzzle/" +
-        newKey +
-        "/" +
-        slug;
+    //   setlivelink(
+    //     "http://update-image.web.app/scheduledlive/slidepuzzle/" +
+    //       edit.text +
+    //       "/" +
+    //       slug
+    //   );
+    //   setpreviewlink("/scheduledlive/slidepuzzle/" + edit.text + "/" + slug);
+    //   setloading(false);
+    // } else if (!livelink) {
+    //   const todoRef = firebase.database().ref("SlidePuzzle");
+    //   const todo = {
+    //     url: fbimg,
+    //     best_score: 100000,
+    //   };
+    //   var newKey = await todoRef.push(todo).getKey();
+    //   setlivelink(
+    //     "http://update-image.web.app/scheduledlive/slidepuzzle/" +
+    //       newKey +
+    //       "/" +
+    //       slug
+    //   );
+    //   setpreviewlink("/scheduledlive/slidepuzzle/" + newKey + "/" + slug);
+    //   const snapshot = await database
+    //     .collection("n-day-pack")
+    //     .doc(`${user.uid}`)
+    //     .collection("giftshub")
+    //     .doc(slug)
+    //     .get();
+    //   const data = snapshot.data().array_data;
+    //   const newdata = data;
+    //   newdata[step].url =
+    //     "http://update-image.web.app/scheduledlive/slidepuzzle/" +
+    //     newKey +
+    //     "/" +
+    //     slug;
 
-      await database
-        .collection("n-day-pack")
-        .doc(`${user.uid}`)
-        .collection("giftshub")
-        .doc(slug)
-        .update(
-          {
-            array_data: newdata,
-          },
-          { merge: true }
-        );
-      await database
-        .collection("Livelinks")
-        .doc(slug)
-        .update(
-          {
-            array_data: newdata,
-          },
-          { merge: true }
-        );
-      toast.success("Slide Puzzle successfully added to your pack");
-      getDoc();
-      setloading(false);
-    }
-    {
-      edit.text != "" && toast.success("Slide Puzzle updated successfully");
-    }
+      // await database
+      //   .collection("n-day-pack")
+      //   .doc(`${user.uid}`)
+      //   .collection("giftshub")
+      //   .doc(slug)
+      //   .update(
+      //     {
+      //       array_data: newdata,
+      //     },
+      //     { merge: true }
+      //   );
+      // await database
+      //   .collection("Livelinks")
+      //   .doc(slug)
+      //   .update(
+      //     {
+      //       array_data: newdata,
+      //     },
+      //     { merge: true }
+      //   );
+      // toast.success("Slide Puzzle successfully added to your pack");
+      // getDoc();
+    //   setloading(false);
+    // }
+    // {
+    //   edit.text != "" && toast.success("Slide Puzzle updated successfully");
+    // }
+    setloading(false);
   };
   async function EditPack() {}
 

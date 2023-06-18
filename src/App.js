@@ -15,6 +15,7 @@ const RegisterComplete = lazy(() => import("./pages/auth/RegisterComplete"));
 const SlidePuzzlePage = lazy(() => import("./SlidePuzzle/SlidePuzzlePage"));
 const LiveSlidePuzzle = lazy(() => import("./LivePages/LiveSlidePuzzle"));
 const Home = lazy(() => import("./pages/Home/Home"));
+const ContinuePack = lazy(() => import("./pages/ContinuePack/ContinuePack"));
 // const UserPacksPage = lazy(() => import("./UserPages/UserPacksPage"));
 // const ThreeDCarouselPage = lazy(() =>
 //   import("./ThreeDCarousel/ThreeDCarouselPage")
@@ -85,7 +86,6 @@ const Home = lazy(() => import("./pages/Home/Home"));
 
 
 // const ForgotPassword = lazy(() => import("./pages/auth/ForgotPassword"));
-// const ContinuePack = lazy(() => import("./pages/ContinuePack"));
 // const ScheduledLiveHoneyComb = lazy(() =>
 //   import("./ScheduledLivePages/ScheduledLiveHoneyComb")
 // );
@@ -227,11 +227,11 @@ const App = () => {
           <Route  path="/slidepuzzlepage" element={<SlidePuzzlePage />} />
           <Route path="*" element={<Error404Page />} />
           <Route  path="/home" element={<Home />} />
+          <Route  path="/ContinuePack/:slug" element={<ContinuePack />} />
           {/* <Route  path="/animatedframe" element={<AnimatedFrame />} />
           <Route  path="/userpackspage" element={<UserPacksPage />} />
           <Route  path="/recommendedhome" element={<SevenDayHome />} />
           <Route  path="/valentinehome" element={<ValentineHome />} />
-          <Route  path="/ContinuePack/:slug" element={<ContinuePack />} />
           <Route  path="/forgot/password" element={<ForgotPassword />} />
           <Route  path="/memorygamepage" element={<MemoryGamePage />} />
           <Route  path="/collagepage" element={<CollagePage />} />

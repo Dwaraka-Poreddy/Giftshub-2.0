@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import "./LiveSlidePuzzle.css";
 import Loader from "react-loader-spinner";
 import LiveNavBar from "../NavBars/LiveNavBar";
-function LiveAnimatedFramePage({ match }) {
+function LiveAnimatedFramePage() {
   const { slug } = useParams();
   const [fbimg, setfbimg] = useState("");
   const [loading, setloading] = useState(true);
