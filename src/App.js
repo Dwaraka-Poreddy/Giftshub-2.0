@@ -19,7 +19,7 @@ const ContinuePack = lazy(() => import("./pages/ContinuePack/ContinuePack"));
 const RocommendedHome = lazy(() => import("./pages/RocommendedHome/RocommendedHome"));
 const ValentineHome = lazy(() => import("./pages/ValentineHome"));
 const SampleGifts = lazy(() => import("./SampleGifts/SampleGifts"));
-// const UserPacksPage = lazy(() => import("./UserPages/UserPacksPage"));
+const UserPacksPage = lazy(() => import("./UserPages/UserPacksPage"));
 // const ThreeDCarouselPage = lazy(() =>
 //   import("./ThreeDCarousel/ThreeDCarouselPage")
 // );
@@ -229,8 +229,8 @@ const App = () => {
           <Route  path="/ContinuePack/:slug" element={<ContinuePack />} />
           <Route  path="/recommendedhome" element={<RocommendedHome />} />
           <Route  path="/valentinehome" element={<ValentineHome />} />
-          {/* <Route  path="/animatedframe" element={<AnimatedFrame />} />
           <Route  path="/userpackspage" element={<UserPacksPage />} />
+          {/* <Route  path="/animatedframe" element={<AnimatedFrame />} />
           <Route  path="/forgot/password" element={<ForgotPassword />} />
           <Route  path="/memorygamepage" element={<MemoryGamePage />} />
           <Route  path="/collagepage" element={<CollagePage />} />

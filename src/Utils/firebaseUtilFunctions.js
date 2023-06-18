@@ -8,6 +8,9 @@ import {
   getDoc,
   updateDoc,
   serverTimestamp,
+  query,
+  orderBy,
+  getDocs,
 } from "firebase/firestore";
 import { ref as ref1, push, child, update, get } from "firebase/database";
 
@@ -246,7 +249,13 @@ export async function updateFirestoreVariable({
   variableToUpdate,
   updatedValue,
 }) {
-  const documentRef = doc(fStore, parent_collection, parent_document, child_collection, child_document);
+  const documentRef = doc(
+    fStore,
+    parent_collection,
+    parent_document,
+    child_collection,
+    child_document
+  );
 
   try {
     await updateDoc(documentRef, {
@@ -255,5 +264,25 @@ export async function updateFirestoreVariable({
     console.log("Document updated successfully");
   } catch (error) {
     console.error("Error updating document: ", error);
+  }
+}
+
+export async function fetchUserAllPackData(useruid) {
+  try {
+    const q = query(
+      collection(fStore, "n-day-pack", useruid, "giftshub"),
+      orderBy("timestamp", "desc")
+    );
+    const querySnapshot = await getDocs(q);
+
+    const fetchedGifts = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    return fetchedGifts;
+  } catch (error) {
+    console.error("Error fetching gifts: ", error);
+    return [];
   }
 }
