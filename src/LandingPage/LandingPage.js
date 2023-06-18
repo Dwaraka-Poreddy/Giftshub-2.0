@@ -16,7 +16,6 @@ import { useDispatch } from "react-redux";
 import Tabs from "react-responsive-tabs";
 import "react-responsive-tabs/styles.css";
 import { Link } from "react-router-dom";
-// import firebase from "../firebase";
 import Footer from "../Footers/Footer";
 import NavBar from "../NavBars/NavBar";
 import "./LandingPage.min.css";
