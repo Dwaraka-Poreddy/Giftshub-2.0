@@ -1,6 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { makeStyles } from '@mui/styles';
-import {Grid, List, Card, CardHeader, ListItem, ListItemText, ListItemIcon, Checkbox, Button, Divider} from '@mui/material';
+import { makeStyles } from "@mui/styles";
+import { spacing, palette } from "@mui/system";
+import { useTheme } from "@mui/material/styles";
+import {
+  Grid,
+  List,
+  Card,
+  CardHeader,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
+  Checkbox,
+  Button,
+  Divider,
+} from "@mui/material";
 
 const allComp = [
   {
@@ -9,7 +22,7 @@ const allComp = [
     content: "Magazine",
     url: "",
     img:
-      "https://img.timeinc.net/time/images/covers/asia/2012/20121105_600.jpg",
+      "https://blog.flipsnack.com/wp-content/uploads/2015/01/essential-elements-of-a-magazine-cover-design-made-in-flipsnack.jpg.webp",
   },
   {
     id: "challenge",
@@ -17,7 +30,7 @@ const allComp = [
     content: "Challenge",
     url: "",
     img:
-      "https://img.timeinc.net/time/images/covers/asia/2012/20121105_600.jpg",
+      "https://us.123rf.com/450wm/outchill/outchill2006/outchill200600382/148711564-challenge-green-black-stamp.jpg?ver=6",
   },
   {
     id: "aboutquiz",
@@ -148,21 +161,22 @@ const allComp = [
       "https://firebasestorage.googleapis.com/v0/b/update-image.appspot.com/o/imp%2FGreeting.PNG?alt=media&token=6ee929be-de78-4b21-a046-ed716c52b8da",
   },
 ];
+
 const useStyles = makeStyles((theme) => ({
   root: {
     margin: "auto",
   },
   cardHeader: {
-    padding: theme.spacing(1, 2),
+    padding: spacing(1, 2),
   },
   list: {
     width: 250,
     height: 280,
-    backgroundColor: theme.palette.background.paper,
+    // backgroundColor: theme.palette.background.paper,
     overflow: "auto",
   },
   button: {
-    margin: theme.spacing(0.5, 0),
+    margin: spacing(0.5, 0),
   },
 }));
 
@@ -179,7 +193,9 @@ function union(a, b) {
 }
 
 export default function TransferList({ setpackfunc }) {
+  const theme = useTheme();
   const classes = useStyles();
+
   const [checked, setChecked] = useState([]);
   const [left, setLeft] = useState(allComp);
   const [right, setRight] = useState([]);
@@ -246,7 +262,13 @@ export default function TransferList({ setpackfunc }) {
         subheader={`${numberOfChecked(items)}/${items.length} selected`}
       />
       <Divider />
-      <List className={classes.list} dense component="div" role="list">
+      <List
+        sx={{ backgroundColor: theme.palette.background.paper }}
+        className={classes.list}
+        dense
+        component="div"
+        role="list"
+      >
         {items.map((value) => {
           const labelId = `transfer-list-all-item-${value}-label`;
 

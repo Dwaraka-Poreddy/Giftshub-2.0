@@ -1,12 +1,13 @@
 import { auth, db, fStore, storage } from "../firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import {
-  ref as ref1,
-  push,
-  child,
-  update,
-  get,
-} from "firebase/database";
+  collection,
+  doc,
+  addDoc,
+  setDoc,
+  serverTimestamp,
+} from "firebase/firestore";
+import { ref as ref1, push, child, update, get } from "firebase/database";
 
 export function uploadImageAndGetDownloadURL(image_url, storagePath) {
   return new Promise((resolve, reject) => {
@@ -83,4 +84,134 @@ export function getDataFromRealtimeDatabase(realtimeDataPath) {
         reject(error); // Reject with the error if any occurs
       });
   });
+}
+
+export async function addMultiDayPackageDataToFirestore({
+  Folder_name,
+  wishes,
+  fbimg,
+  Bday_date,
+  From_name,
+  To_name,
+  pack_array_data,
+  parent_collection,
+  parent_document,
+  child_collection,
+}) {
+  const collectionPath = collection(
+    fStore,
+    parent_collection,
+    parent_document,
+    child_collection
+  );
+
+  try {
+    const docRef = await addDoc(collectionPath, {
+      Folder_name,
+      wishes,
+      fbimg,
+      Bday_date,
+      From_name,
+      To_name,
+      pack_array_data,
+      timestamp: serverTimestamp(),
+    });
+    console.log("Document written with ID: ", docRef.id);
+    return docRef.id;
+  } catch (error) {
+    console.error("Error adding document: ", error);
+    return null;
+  }
+}
+
+export async function addLivelinksDataToFirestore({
+  Folder_name,
+  wishes,
+  fbimg,
+  Bday_date,
+  From_name,
+  To_name,
+  pack_array_data,
+  parent_collection,
+  parent_document,
+}) {
+  const collectionPath = collection(fStore, parent_collection);
+  const documentPath = doc(collectionPath, parent_document,);
+
+  try {
+    const docRef = await setDoc(documentPath, {
+      Folder_name: Folder_name,
+      wishes: wishes,
+      fbimg: fbimg,
+      From_name: From_name,
+      Bday_date: Bday_date,
+      To_name: To_name,
+      array_data: pack_array_data,
+      timestamp: serverTimestamp(),
+    });
+    console.log("Document updated successfully");
+    return docRef.id;
+  } catch (error) {
+    console.error("Error updating document: ", error);
+    return null;
+  }
+}
+
+export async function addDataToFirestore({
+  Folder_name,
+  wishes,
+  fbimg,
+  Bday_date,
+  From_name,
+  To_name,
+  pack_array_data,
+  parent_collection,
+  parent_document,
+  child_collection,
+  addData,
+}) {
+  var collectionPath = collection(fStore, parent_collection);
+  var documentPath;
+
+  if (addData) {
+    collectionPath = collection(collectionPath, parent_document, child_collection);
+  } else {
+    documentPath = doc(collectionPath, parent_document);
+  }
+
+  console.log(addData, "hmmmmm", collectionPath);
+
+  try {
+    let docRef;
+    if (addData) {
+      docRef = await addDoc(collectionPath, {
+        Folder_name,
+        wishes,
+        fbimg,
+        Bday_date,
+        From_name,
+        To_name,
+        pack_array_data,
+        timestamp: serverTimestamp(),
+      });
+      console.log("Document operation successful. Document ID: ", docRef.id);
+      return docRef.id;
+    } else {
+      await setDoc(documentPath, {
+        Folder_name,
+        wishes,
+        fbimg,
+        Bday_date,
+        From_name,
+        To_name,
+        array_data: pack_array_data,
+        timestamp: serverTimestamp(),
+      });
+      console.log("Document operation successful. ");
+      return parent_document;
+    }
+  } catch (error) {
+    console.error("Error performing document operation: ", error);
+    return null;
+  }
 }

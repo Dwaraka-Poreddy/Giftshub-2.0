@@ -1,4 +1,5 @@
 import { makeStyles } from "@mui/styles";
+import { spacing } from '@mui/system';
 import { FlightTakeoff, Image, Share, Visibility } from "@mui/icons-material";
 import React, { useState } from "react";
 import { BrowserView } from "react-device-detect";
@@ -22,7 +23,7 @@ import SlidePuzzleAnswer from "./SlidePuzzleAnswer";
 const secuseStyles = makeStyles((theme) => ({
   root: {
     "& > *": {
-      // margin: theme.spacing(0),
+      margin: spacing(0),
     },
   },
   input: {

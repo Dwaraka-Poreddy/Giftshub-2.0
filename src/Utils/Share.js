@@ -1,8 +1,16 @@
 import React, { useState } from "react";
-import { makeStyles } from '@mui/styles';
-import TextField from '@mui/material/TextField';
+import { makeStyles } from "@mui/styles";
+import { spacing } from "@mui/system";
+import TextField from "@mui/material/TextField";
 import HeaderBtn from "../Studio/HeaderBtn";
-import { Mail, Twitter, WhatsApp, Facebook, Image, Create } from '@mui/icons-material';
+import {
+  Mail,
+  Twitter,
+  WhatsApp,
+  Facebook,
+  Image,
+  Create,
+} from "@mui/icons-material";
 import emailjs from "emailjs-com";
 import {
   FacebookShareButton,
@@ -13,7 +21,7 @@ import {
 const useStyles = makeStyles((theme) => ({
   root: {
     "& > *": {
-      margin: theme.spacing(1),
+      margin: spacing(1),
       width: "25ch",
     },
   },

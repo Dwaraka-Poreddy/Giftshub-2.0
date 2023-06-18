@@ -1,20 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getAuth } from "firebase/auth";
-import { auth, db, fStore, storage } from "../../firebase";
-import { collection, doc, addDoc, serverTimestamp } from "firebase/firestore";
 import { useNavigate, useLocation } from "react-router-dom";
-import { AccountCircleOutlined, ImageOutlined, CheckBoxOutlined, FolderSharedOutlined, Cake } from "@mui/icons-material";
-import { uploadImageAndGetDownloadURL } from "../../Utils/firebaseUtilFunctions"
+import {
+  AccountCircleOutlined,
+  ImageOutlined,
+  CheckBoxOutlined,
+  FolderSharedOutlined,
+  Cake,
+} from "@mui/icons-material";
+import {
+  uploadImageAndGetDownloadURL,
+  addDataToFirestore,
+} from "../../Utils/firebaseUtilFunctions";
 import CropPage from "../../Utils/CropPage";
 import { v4 as uuidv4 } from "uuid";
 import NPackSelect from "../NPackSelect/NPackSelect";
-import NPackSelectMobile from "../NPackSelectMobile/NPackSelectMobile"
+import NPackSelectMobile from "../NPackSelectMobile/NPackSelectMobile";
 import NavBar from "../../NavBars/NavBar";
 import Footer from "../../Footers/Footer";
 import Loader from "react-loader-spinner";
-import Grid from '@mui/material/Grid';
-import TextField from '@mui/material/TextField';
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
 import { isMobileOnly, isTablet } from "react-device-detect";
 import { Helmet } from "react-helmet";
 import "./Home.css";
@@ -63,85 +70,47 @@ const Home = () => {
     setloading(true);
     var ud = uuidv4();
 
-    const storedImgURL = await uploadImageAndGetDownloadURL(
-      image_url,
-      `/images/slidePuzzle/${ud}`
-    );
+    try {
+      const storedImgURL = await uploadImageAndGetDownloadURL(
+        image_url,
+        `/images/slidePuzzle/${ud}`
+      );
 
-    const sevendayPack = collection(fStore, "n-day-pack");
-    const sevendayPackPack = collection(sevendayPack, user.uid, "giftshub");
-
-    addDoc(sevendayPackPack, {
+      const nPackDocId = await addDataToFirestore({
         Folder_name: Folder_name,
         wishes: wishes,
         fbimg: storedImgURL,
         Bday_date: Bday_date,
         From_name: From_name,
         To_name: To_name,
-        array_data: npackorder,
-        timestamp: serverTimestamp(),
-      })
-        .then((docRef) => {
-          console.log("Document written with ID: ", docRef.id);
-        })
-        .catch((error) => {
-          console.error("Error adding document: ", error);
-        });
+        pack_array_data: npackorder,
+        parent_collection: "n-day-pack",
+        parent_document: user.uid,
+        child_collection: "giftshub",
+        addData: true,
+      });
 
-    // uploadTask.on(
-    //   "state_changed",
-    //   (snapshot) => {},
-    //   (err) => {
-    //     console.log(err);
-    //   },
-    //   () => {
-    //     var s = storage
-    //       .ref("images")
-    //       .child(ud)
-    //       .putString(image_url, "base64", { contentType: "image/jpg" })
-    //       .then((savedImage) => {
-    //         savedImage.ref.getDownloadURL().then((downUrl) => {
-    //           var sevendayPack = firebase.firestore().collection("/n-day-pack");
-    //           var sevendayPackPack = sevendayPack
-    //             .doc(`${user.uid}`)
-    //             .collection("giftshub");
-    //           sevendayPackPack
-    //             .add({
-    //               Folder_name: Folder_name,
-    //               wishes: wishes,
-    //               fbimg: downUrl,
-    //               Bday_date: Bday_date,
-    //               From_name: From_name,
-    //               To_name: To_name,
-    //               array_data: npackorder,
-    //               timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-    //             })
-    //             .then(function(docRef) {
-    //               var LivelinkPack = firebase
-    //                 .firestore()
-    //                 .collection("/Livelinks");
-    //               var LivelinkPackPack = LivelinkPack.doc(docRef.id).set({
-    //                 Folder_name: Folder_name,
-    //                 wishes: wishes,
-    //                 fbimg: downUrl,
-    //                 From_name: From_name,
-    //                 Bday_date: Bday_date,
-    //                 To_name: To_name,
-    //                 array_data: npackorder,
-    //                 timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-    //               });
+      const liveLinksDocId = await addDataToFirestore({
+        Folder_name: Folder_name,
+        wishes: wishes,
+        fbimg: storedImgURL,
+        Bday_date: Bday_date,
+        From_name: From_name,
+        To_name: To_name,
+        pack_array_data: npackorder,
+        parent_collection: "Livelinks",
+        parent_document: nPackDocId,
+        addData: false,
+      });
 
-    //               history.push(`/ContinuePack/${docRef.id}`);
-    //               setloading(false);
-    //             })
-    //             .catch(function(error) {
-    //               console.error("Error adding Tutorial: ", error);
-    //             });
-    //         });
-    //       });
-    //   }
-    // );
+      navigate(`/ContinuePack/${nPackDocId}`);
+      setloading(false);
+    } catch (error) {
+      console.error("Error Creating Pack: ", error);
+      setloading(false);
+    }
   };
+
   const browview = () => {
     return <NPackSelect setpackfunc={setpackfunc} />;
   };
@@ -262,7 +231,7 @@ const Home = () => {
                 <TextField
                   fullWidth="true"
                   id="date"
-                  label="Event Date"
+                  label="Event Date*"
                   type="date"
                   value={Bday_date}
                   defaultValue={Bday_date}
@@ -395,14 +364,32 @@ const Home = () => {
               <div>
                 <center>
                   {isMobileOnly ? mobview() : isTablet ? mobview() : browview()}
-
-                  {/* <NpackSelectMobile setpackfunc={setpackfunc} />
-                  <NpackSelect setpackfunc={setpackfunc} /> */}
                 </center>
               </div>
               <br />
               <center>
-                {npackorder.length == 0 || !Bday_date ? (
+                {npackorder.length != 0 &&
+                Bday_date &&
+                Folder_name &&
+                From_name &&
+                To_name &&
+                wishes &&
+                fbimg ? (
+                  <>
+                    <input
+                      style={{ display: "none" }}
+                      id="submit"
+                      type="submit"
+                      value="Create n day pack"
+                    />
+                    <label htmlFor="submit">
+                      <button className="main-button">
+                        {" "}
+                        Create {npackorder.length} day pack
+                      </button>
+                    </label>
+                  </>
+                ) : (
                   <>
                     <input
                       disabled
@@ -417,21 +404,6 @@ const Home = () => {
                         style={{ cursor: "default" }}
                         className="main-button"
                       >
-                        {" "}
-                        Create {npackorder.length} day pack
-                      </button>
-                    </label>
-                  </>
-                ) : (
-                  <>
-                    <input
-                      style={{ display: "none" }}
-                      id="submit"
-                      type="submit"
-                      value="Create 7 day pack"
-                    />
-                    <label htmlFor="submit">
-                      <button className="main-button">
                         {" "}
                         Create {npackorder.length} day pack
                       </button>

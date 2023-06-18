@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import $ from "jquery";
-import { SyncAlt} from "@mui/icons-material";
+import { SyncAlt } from "@mui/icons-material";
 import "./NPackSelect.css";
 const allComp = [
   {
@@ -253,8 +253,10 @@ class N_Pack_Select extends Component {
         state = { selected: items };
       }
 
-      this.setState(state);
-      this.props.setpackfunc(this.state.selected);
+      this.setState(state, () => {
+        // Call setpackfunc after updating the state
+        this.props.setpackfunc(this.state.selected);
+      });
     } else {
       const result = move(
         this.getList(source.droppableId),
@@ -263,11 +265,16 @@ class N_Pack_Select extends Component {
         destination
       );
 
-      this.setState({
-        items: result.droppable,
-        selected: result.droppable2,
-      });
-      this.props.setpackfunc(this.state.selected);
+      this.setState(
+        {
+          items: result.droppable,
+          selected: result.droppable2,
+        },
+        () => {
+          // Call setpackfunc after updating the state
+          this.props.setpackfunc(this.state.selected);
+        }
+      );
     }
   };
 
@@ -359,16 +366,16 @@ class N_Pack_Select extends Component {
                       {(provided, snapshot) => (
                         <div
                           style={{
+                            ...getItemStyle1(
+                              snapshot.isDragging,
+                              provided.draggableProps.style
+                            ),
                             display: "flex",
                             justifyContent: "space-evenly",
                           }}
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
-                          style={getItemStyle1(
-                            snapshot.isDragging,
-                            provided.draggableProps.style
-                          )}
                         >
                           <div class="card  shadow-none">
                             <div class="row no-gutters">
