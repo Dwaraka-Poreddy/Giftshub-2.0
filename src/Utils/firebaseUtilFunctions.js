@@ -6,6 +6,7 @@ import {
   addDoc,
   setDoc,
   getDoc,
+  updateDoc,
   serverTimestamp,
 } from "firebase/firestore";
 import { ref as ref1, push, child, update, get } from "firebase/database";
@@ -35,7 +36,7 @@ export function uploadImageAndGetDownloadURL(image_url, storagePath) {
   });
 }
 
-export async function updateSlidePuzzleWithImage(
+export async function updateDataInRealTimeDataBase(
   data,
   realTimeDBPath,
   realTimeDBKey
@@ -54,7 +55,7 @@ export async function updateSlidePuzzleWithImage(
   }
 }
 
-export async function addDataToRealTImeDatabase(data, realTimeDBPath) {
+export async function addDataToRealTimeDatabase(data, realTimeDBPath) {
   return new Promise(async (resolve, reject) => {
     try {
       const newKey = push(ref1(db, realTimeDBPath), {
@@ -234,5 +235,25 @@ export async function fetchDocumentFromFireStore(docRef) {
   } catch (error) {
     console.error("Error fetching document:", error);
     return null;
+  }
+}
+
+export async function updateFirestoreVariable({
+  parent_collection,
+  parent_document,
+  child_collection,
+  child_document,
+  variableToUpdate,
+  updatedValue,
+}) {
+  const documentRef = doc(fStore, parent_collection, parent_document, child_collection, child_document);
+
+  try {
+    await updateDoc(documentRef, {
+      [variableToUpdate]: updatedValue,
+    });
+    console.log("Document updated successfully");
+  } catch (error) {
+    console.error("Error updating document: ", error);
   }
 }

@@ -1,5 +1,5 @@
 import { makeStyles } from "@mui/styles";
-import { spacing } from '@mui/system';
+import { spacing } from "@mui/system";
 import { FlightTakeoff, Image, Share, Visibility } from "@mui/icons-material";
 import React, { useEffect, useState } from "react";
 import Loader from "react-loader-spinner";
@@ -9,16 +9,16 @@ import { toast } from "react-toastify";
 import Tour from "reactour";
 import { v4 as uuidv4 } from "uuid";
 import "../Buttons.css";
-import { auth, db, fStore, storage } from "../firebase";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { fStore } from "../firebase";
+import { doc } from "firebase/firestore";
 import {
-  getDatabase,
-  ref as ref1,
-  push,
-  child,
-  update,
-  get,
-} from "firebase/database";
+  uploadImageAndGetDownloadURL,
+  fetchDocumentFromFireStore,
+  updateFirestoreVariable,
+  updateDataInRealTimeDataBase,
+  getDataFromRealtimeDatabase,
+  addDataToRealTimeDatabase,
+} from "../Utils/firebaseUtilFunctions";
 import HeaderBtn from "../Studio/HeaderBtn";
 import Copy from "../Utils/Copy";
 import CropPage from "../Utils/CropPage";
@@ -42,7 +42,7 @@ function ScheduledSlidePuzzlePage({
   isTourOpen,
   setTourOpend,
 }) {
-  const [showoptions, setshowoptions] = useState(false);
+  const [showoptions, setShowoptions] = useState(false);
   const [accentColor, setaccentColor] = useState("#70cff3");
   let { edit } = useSelector((state) => ({ ...state }));
   const [Cloading, setCLoading] = useState(false);
@@ -52,7 +52,6 @@ function ScheduledSlidePuzzlePage({
   const [livelink, setlivelink] = useState();
   const [previewlink, setpreviewlink] = useState("");
   const [fireurl, setFireUrl] = useState("");
-  const [imageAsFile, setImageAsFile] = useState("");
   const [image_url, setimage_url] = useState();
   const [opencrop, setopencrop] = useState(false);
   const [send, setSend] = useState();
@@ -66,26 +65,25 @@ function ScheduledSlidePuzzlePage({
   useEffect(() => {
     setCLoading(true);
     if (edit.text != "") {
-      const todoRef = ref1(db, "/SlidePuzzle/" + edit.text);
-
-      get(todoRef)
-        .then((snapshot) => {
-          if (snapshot.exists()) {
-            const data = snapshot.val();
-            var img = snapshot.val().url;
-            setfbimg(img);
-            console.log("Data from the database:", data);
-          } else {
-            console.log("No data available.");
-          }
-        })
-        .catch((error) => {
-          console.error("Error reading data:", error);
-        });
-      setCLoading(false);
-    } else {
-      setCLoading(false);
+      getDataFromRealtimeDatabase(`/SlidePuzzle/${edit.text}`).then((data) => {
+        if (data) {
+          var img = data.url;
+          setfbimg(img);
+          console.log("Data from the database:", data);
+        } else {
+          console.log("No data available.");
+        }
+      });
+      setlivelink(
+        "http://update-image.web.app/scheduledlive/slidepuzzle/" +
+          edit.text +
+          "/" +
+          slug
+      );
+      setpreviewlink("/scheduledlive/slidepuzzle/" + edit.text + "/" + slug);
+      setShowoptions(true)
     }
+    setCLoading(false);
   }, []);
   const onSelectFile = (e) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -99,91 +97,77 @@ function ScheduledSlidePuzzlePage({
   const handleFireBaseUpload = async () => {
     setloading(true);
     var ud = uuidv4();
+    var data;
+    if(!image_url){
+      data = {
+        url: fbimg,
+        best_score: 1000,
+      };
+    } else {
+      const storedImgURL = await uploadImageAndGetDownloadURL(
+        image_url,
+        `/images/slidePuzzle/${ud}`
+      );
+      data = {
+        url: storedImgURL,
+        best_score: 1000,
+      };
+    }
 
-    // const uploadTask = await storage
-    //   .ref(`/images/${imageAsFile.name}`)
-    //   .put(imageAsFile);
-    // if (edit.text != "") {
-    //   const slidePuzzleRef = ref1(db, "SlidePuzzle/" + edit.text);
-    //   const updatedData = {
-    //     url: fbimg,
-    //     best_score: 100000,
-    //   };
-    //   update(childRef, slidePuzzleRef)
-    //     .then(() => {
-    //       console.log("Value updated successfully!");
-    //     })
-    //     .catch((error) => {
-    //       console.error("Error updating value:", error);
-    //     });
-      
-    //   setlivelink(
-    //     "http://update-image.web.app/scheduledlive/slidepuzzle/" +
-    //       edit.text +
-    //       "/" +
-    //       slug
-    //   );
-    //   setpreviewlink("/scheduledlive/slidepuzzle/" + edit.text + "/" + slug);
-    //   setloading(false);
-    // } else if (!livelink) {
-    //   const todoRef = firebase.database().ref("SlidePuzzle");
-    //   const todo = {
-    //     url: fbimg,
-    //     best_score: 100000,
-    //   };
-    //   var newKey = await todoRef.push(todo).getKey();
-    //   setlivelink(
-    //     "http://update-image.web.app/scheduledlive/slidepuzzle/" +
-    //       newKey +
-    //       "/" +
-    //       slug
-    //   );
-    //   setpreviewlink("/scheduledlive/slidepuzzle/" + newKey + "/" + slug);
-    //   const snapshot = await database
-    //     .collection("n-day-pack")
-    //     .doc(`${user.uid}`)
-    //     .collection("giftshub")
-    //     .doc(slug)
-    //     .get();
-    //   const data = snapshot.data().array_data;
-    //   const newdata = data;
-    //   newdata[step].url =
-    //     "http://update-image.web.app/scheduledlive/slidepuzzle/" +
-    //     newKey +
-    //     "/" +
-    //     slug;
+    if (edit.text != "") {
+      updateDataInRealTimeDataBase(data, "SlidePuzzle", edit.text);
 
-      // await database
-      //   .collection("n-day-pack")
-      //   .doc(`${user.uid}`)
-      //   .collection("giftshub")
-      //   .doc(slug)
-      //   .update(
-      //     {
-      //       array_data: newdata,
-      //     },
-      //     { merge: true }
-      //   );
-      // await database
-      //   .collection("Livelinks")
-      //   .doc(slug)
-      //   .update(
-      //     {
-      //       array_data: newdata,
-      //     },
-      //     { merge: true }
-      //   );
-      // toast.success("Slide Puzzle successfully added to your pack");
-      // getDoc();
-    //   setloading(false);
-    // }
-    // {
-    //   edit.text != "" && toast.success("Slide Puzzle updated successfully");
-    // }
-    setloading(false);
+      setlivelink(
+        "http://update-image.web.app/scheduledlive/slidepuzzle/" +
+          edit.text +
+          "/" +
+          slug
+      );
+      setpreviewlink("/scheduledlive/slidepuzzle/" + edit.text + "/" + slug);
+      setloading(false);
+    } else if (!livelink) {
+      addDataToRealTimeDatabase(data, "SlidePuzzle").then(async (newKey) => {
+        setlivelink(
+          "http://update-image.web.app/scheduledlive/slidepuzzle/" +
+            newKey +
+            "/" +
+            slug
+        );
+        setpreviewlink("/scheduledlive/slidepuzzle/" + newKey + "/" + slug);
+
+        const docRef = doc(fStore, "n-day-pack", user.uid, "giftshub", slug);
+        const datanew = await fetchDocumentFromFireStore(docRef);
+        if (datanew) {
+          const data = datanew.array_data;
+          const newdata = data;
+          newdata[step].url =
+            "http://update-image.web.app/scheduledlive/slidepuzzle/" +
+            newKey +
+            "/" +
+            slug;
+
+          updateFirestoreVariable({
+            parent_collection: "n-day-pack",
+            parent_document: user.uid,
+            child_collection: "giftshub",
+            child_document: slug,
+            variableToUpdate: "array_data",
+            updatedValue: newdata,
+          });
+        } else {
+          console.error("Error fetching document data");
+        }
+      });
+
+      toast.success("Slide Puzzle successfully added to your pack");
+      getDoc();
+      setloading(false);
+    }
+    {
+      edit.text != "" && toast.success("Slide Puzzle updated successfully");
+    }
   };
   async function EditPack() {}
-
   const tourConfig = [
     {
       selector: '[data-tut="reactour__changeImage"]',
@@ -318,7 +302,7 @@ function ScheduledSlidePuzzlePage({
                         className="main-button"
                         onClick={() => {
                           handleFireBaseUpload();
-                          setshowoptions(true);
+                          setShowoptions(true);
                         }}
                         data-tut="reactour__generatelink"
                       >
@@ -330,7 +314,7 @@ function ScheduledSlidePuzzlePage({
                         className="main-button"
                         onClick={() => {
                           handleFireBaseUpload();
-                          setshowoptions(true);
+                          setShowoptions(true);
                         }}
                         data-tut="reactour__updatepack"
                       >

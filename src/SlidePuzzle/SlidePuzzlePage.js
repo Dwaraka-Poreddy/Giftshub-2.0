@@ -1,5 +1,5 @@
 import { makeStyles } from "@mui/styles";
-import { spacing } from '@mui/system';
+import { spacing } from "@mui/system";
 import { FlightTakeoff, Image, Share, Visibility } from "@mui/icons-material";
 import React, { useState } from "react";
 import { BrowserView } from "react-device-detect";
@@ -8,8 +8,8 @@ import { Link } from "react-router-dom";
 import Tour from "reactour";
 import { v4 as uuidv4 } from "uuid";
 import {
-  updateSlidePuzzleWithImage,
-  addDataToRealTImeDatabase,
+  updateDataInRealTimeDataBase,
+  addDataToRealTimeDatabase,
   uploadImageAndGetDownloadURL,
 } from "../Utils/firebaseUtilFunctions";
 import "../Buttons.css";
@@ -66,42 +66,28 @@ function SlidePuzzlePage() {
   const handleFireBaseUpload = async () => {
     setloading(true);
     var ud = uuidv4();
+    const storedImgURL = await uploadImageAndGetDownloadURL(
+      image_url,
+      `/images/slidePuzzle/${ud}`
+    );
+    const data = {
+      url: storedImgURL,
+      best_score: 1000,
+    };
 
     if (livelink) {
-      const storedImgURL = await uploadImageAndGetDownloadURL(
-        image_url,
-        `/images/slidePuzzle/${ud}`,
-      );
-      const data = {
-        url: storedImgURL,
-        best_score: 1000,
-      }
-      updateSlidePuzzleWithImage(
-        data,
-        "SlidePuzzle",
-        realTimeDBKey
-      );
+      updateDataInRealTimeDataBase(data, "SlidePuzzle", realTimeDBKey);
     } else {
-      const storedImgURL = await uploadImageAndGetDownloadURL(
-        image_url,
-        `/images/slidePuzzle/${ud}`,
-      );
-      const data = {
-        url: storedImgURL,
-        best_score: 1000,
-      }
-      addDataToRealTImeDatabase(
-        data,
-        "SlidePuzzle"
-      ).then((newKey) => {
-        console.log("New key:", newKey);
-        setlivelink("http://update-image.web.app/live/slidepuzzle/" + newKey);
-        setRealTimeDBKey(newKey);
-        setpreviewlink("/live/slidepuzzle/" + newKey);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+      addDataToRealTimeDatabase(data, "SlidePuzzle")
+        .then((newKey) => {
+          console.log("New key:", newKey);
+          setlivelink("http://update-image.web.app/live/slidepuzzle/" + newKey);
+          setRealTimeDBKey(newKey);
+          setpreviewlink("/live/slidepuzzle/" + newKey);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
     }
     setloading(false);
   };

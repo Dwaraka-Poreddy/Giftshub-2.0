@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import SlidePuzzle from "../SlidePuzzle/SlidePuzzle";
 import SlidePuzzleAnswer from "../SlidePuzzle/SlidePuzzleAnswer";
-import { updateSlidePuzzleWithImage, getDataFromRealtimeDatabase } from "../Utils/firebaseUtilFunctions"
+import { updateDataInRealTimeDataBase, getDataFromRealtimeDatabase } from "../Utils/firebaseUtilFunctions"
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import "./LiveSlidePuzzle.css";
@@ -20,7 +20,7 @@ function LiveAnimatedFramePage() {
         url: fbimg,
         best_score: e,
       }
-      updateSlidePuzzleWithImage(
+      updateDataInRealTimeDataBase(
         data,
         "SlidePuzzle",
         slug

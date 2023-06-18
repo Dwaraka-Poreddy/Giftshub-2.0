@@ -65,7 +65,8 @@ const allComp = [
     ismailsent: false,
     content: "Slide Puzzle",
     url: "",
-    img: require("../../Images/cardimages/slidepuzzle.PNG"),
+    img:
+      "https://firebasestorage.googleapis.com/v0/b/update-image.appspot.com/o/imp%2Ftom-and-jerry-hd-background.jpg?alt=media&token=a5fb8323-7899-46d7-8119-16b69e1e2531",
   },
   {
     id: "specialcard",
