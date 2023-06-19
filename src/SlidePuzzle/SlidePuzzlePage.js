@@ -191,18 +191,6 @@ function SlidePuzzlePage() {
                     multiple
                     type="file"
                     onChange={onSelectFile}
-                    // onChange={(e) => {
-                    //   const reader = new FileReader();
-                    //   reader.addEventListener("load", () =>
-                    //     setSend({ src: reader.result })
-                    //   );
-                    //   reader.readAsDataURL(e.target.files[0]);
-                    //   console.log("now");
-
-                    //   console.log(e.target.files[0]);
-                    //   console.log("Dwarakaaa efore");
-                    //   setopencrop(true);
-                    // }}
                     onClick={(event) => {
                       console.log(event.target.value);
                       event.target.value = null;

@@ -1,18 +1,18 @@
 import { makeStyles } from "@mui/styles";
 import { spacing } from "@mui/system";
-import { FlightTakeoff, Image, Share, Visibility } from "@mui/icons-material";
+import { Image, Visibility } from "@mui/icons-material";
 import React, { useEffect, useState } from "react";
 import Loader from "react-loader-spinner";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import CryptoJS from "crypto-js";
 import Tour from "reactour";
 import { v4 as uuidv4 } from "uuid";
 import "../Buttons.css";
 import { fStore } from "../firebase";
 import { doc } from "firebase/firestore";
 import {
-  uploadImageAndGetDownloadURL,
   fetchDocumentFromFireStore,
   updateFirestoreVariable,
   updateDataInRealTimeDataBase,
@@ -24,7 +24,7 @@ import Copy from "../Utils/Copy";
 import CropPage from "../Utils/CropPage";
 import SlidePuzzle from "./SlidePuzzle";
 import SlidePuzzleAnswer from "./SlidePuzzleAnswer";
-const secuseStyles = makeStyles((theme) => ({
+const secuseStyles = makeStyles(() => ({
   root: {
     "& > *": {
       margin: spacing(0),
@@ -48,27 +48,42 @@ function ScheduledSlidePuzzlePage({
   const [Cloading, setCLoading] = useState(false);
   const [loading, setloading] = useState(false);
   const secclasses = secuseStyles();
-  const [showshare, setshowshare] = useState(false);
   const [livelink, setlivelink] = useState();
   const [previewlink, setpreviewlink] = useState("");
-  const [fireurl, setFireUrl] = useState("");
-  const [image_url, setimage_url] = useState();
+  const [encryptedImgUrl, setEncryptedImgUrl] = useState();
+  const [encryptionKey, setEncryptionKey] = useState();
   const [opencrop, setopencrop] = useState(false);
   const [send, setSend] = useState();
+  const [bestscore, setbestscore] = useState();
   const { user } = useSelector((state) => ({ ...state }));
   const [fbimg, setfbimg] = useState(
     "https://firebasestorage.googleapis.com/v0/b/update-image.appspot.com/o/imp%2Ftom-and-jerry-hd-background.jpg?alt=media&token=a5fb8323-7899-46d7-8119-16b69e1e2531"
   );
+
+  useEffect(() => {
+    const enKey = uuidv4();
+    setEncryptionKey(enKey)
+  }, []);
+
   const handlepuzzlescore = (e) => {
     console.log("Yoooo");
   };
+
   useEffect(() => {
     setCLoading(true);
     if (edit.text != "") {
       getDataFromRealtimeDatabase(`/SlidePuzzle/${edit.text}`).then((data) => {
         if (data) {
-          var img = data.url;
-          setfbimg(img);
+          setEncryptionKey(data.encryptionKey);
+          setEncryptedImgUrl(data.url)
+          const decryptedBytes = CryptoJS.AES.decrypt(
+            data.url,
+            data.encryptionKey
+          );
+          const decryptedImageURL = CryptoJS.enc.Utf8.stringify(decryptedBytes);
+          setfbimg(decryptedImageURL);
+          var bestscore = data.best_score;
+          setbestscore(bestscore);
           console.log("Data from the database:", data);
         } else {
           console.log("No data available.");
@@ -96,20 +111,17 @@ function ScheduledSlidePuzzlePage({
 
   const handleFireBaseUpload = async () => {
     setloading(true);
-    var ud = uuidv4();
     var data;
-    if (!image_url) {
+    if (!encryptedImgUrl) {
       data = {
         url: fbimg,
+        encryptionKey: encryptionKey,
         best_score: 1000,
       };
     } else {
-      const storedImgURL = await uploadImageAndGetDownloadURL(
-        image_url,
-        `/images/slidePuzzle/${ud}`
-      );
       data = {
-        url: storedImgURL,
+        url: encryptedImgUrl,
+        encryptionKey: encryptionKey,
         best_score: 1000,
       };
     }
@@ -179,7 +191,7 @@ function ScheduledSlidePuzzlePage({
       edit.text != "" && toast.success("Slide Puzzle updated successfully");
     }
   };
-  async function EditPack() {}
+
   const tourConfig = [
     {
       selector: '[data-tut="reactour__changeImage"]',
@@ -286,13 +298,14 @@ function ScheduledSlidePuzzlePage({
                   />
                   {opencrop ? (
                     <CropPage
-                      send={send}
-                      setfbimg={setfbimg}
-                      setimage_url={setimage_url}
-                      aspect_ratio={1 / 1}
-                      opencrop={opencrop}
-                      setopencrop={setopencrop}
-                    />
+                    encryptionKey={encryptionKey}
+                    send={send}
+                    setfbimg={setfbimg}
+                    setEncryptedImgUrl={setEncryptedImgUrl}
+                    aspect_ratio={1 / 1}
+                    opencrop={opencrop}
+                    setopencrop={setopencrop}
+                  />
                   ) : null}
                   <label htmlFor="LocalfileInput">
                     <HeaderBtn Icon={Image} title="Change  image " />

@@ -38,9 +38,6 @@ function LiveAnimatedFramePage() {
     getDataFromRealtimeDatabase(`/SlidePuzzle/${slug}`)
       .then((data) => {
         if (data) {
-          console.log("Data from the database:", data);
-          console.log("data.theEncryptionKey:", data.theEncryptionKey);
-          console.log("data.url:", data.url);
           setTheEncryptionKey(data.theEncryptionKey);
           setEncryptedImage(data.url)
           const decryptedBytes = CryptoJS.AES.decrypt(
