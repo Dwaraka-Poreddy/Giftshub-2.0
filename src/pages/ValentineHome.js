@@ -14,10 +14,7 @@ import {
 } from "@mui/icons-material";
 import { spacing } from "@mui/system";
 import CropPage from "../Utils/CropPage";
-import {
-  uploadImageAndGetDownloadURL,
-  addDataToFirestore,
-} from "../Utils/firebaseUtilFunctions";
+import { addDataToFirestore } from "../Utils/firebaseUtilFunctions";
 import "owl.carousel/dist/assets/owl.carousel.css";
 import "owl.carousel/dist/assets/owl.theme.default.css";
 import Loader from "react-loader-spinner";
@@ -149,9 +146,15 @@ function ValentineHome({ history }) {
   const [send, setSend] = useState();
   const [fbimg, setfbimg] = useState();
   const [imageAsFile, setImageAsFile] = useState("");
-  const [image_url, setimage_url] = useState();
+  const [encryptionKey, setEncryptionKey] = useState();
+  const [encryptedImgUrl, setEncryptedImgUrl] = useState();
   const [wishes, setwishes] = useState("");
   const [Bday_date, setBday_date] = useState();
+
+  useEffect(() => {
+    const enKey = uuidv4();
+    setEncryptionKey(enKey);
+  }, []);
 
   $(document).ready(function() {
     $(".card").hover(
@@ -186,19 +189,15 @@ function ValentineHome({ history }) {
   const CreatePack = async (e) => {
     setloading(true);
     e.preventDefault();
-    var ud = uuidv4();
 
     try {
-      const storedImgURL = await uploadImageAndGetDownloadURL(
-        image_url,
-        `/images/slidePuzzle/${ud}`
-      );
       var selectedpackorder = [...valentinepackorder];
 
       const nPackDocId = await addDataToFirestore({
         Folder_name: Folder_name,
         wishes: wishes,
-        fbimg: storedImgURL,
+        fbimg: encryptedImgUrl,
+        encryptionKey: encryptionKey,
         Bday_date: Bday_date,
         From_name: From_name,
         To_name: To_name,
@@ -212,7 +211,8 @@ function ValentineHome({ history }) {
       const liveLinksDocId = await addDataToFirestore({
         Folder_name: Folder_name,
         wishes: wishes,
-        fbimg: storedImgURL,
+        fbimg: encryptedImgUrl,
+        encryptionKey: encryptionKey,
         Bday_date: Bday_date,
         From_name: From_name,
         To_name: To_name,
@@ -412,9 +412,10 @@ function ValentineHome({ history }) {
                 />
                 {opencrop ? (
                   <CropPage
+                    encryptionKey={encryptionKey}
                     send={send}
                     setfbimg={setfbimg}
-                    setimage_url={setimage_url}
+                    setEncryptedImgUrl={setEncryptedImgUrl}
                     aspect_ratio={1 / 1}
                     opencrop={opencrop}
                     setopencrop={setopencrop}

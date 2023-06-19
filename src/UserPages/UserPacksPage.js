@@ -81,8 +81,10 @@ function UserPacksPage() {
   };
 
   const handleDeletePack = async (id) => {
+    console.log("trying to deleete", id);
     setGifts((prevgifts) => {
       return prevgifts.filter((giftitem) => {
+        console.log(giftitem.id);
         return giftitem.id !== id;
       });
     });

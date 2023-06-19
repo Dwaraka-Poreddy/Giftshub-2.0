@@ -59,7 +59,7 @@ function SlidePuzzlePage() {
 
     const data = {
       url: encryptedImgUrl,
-      theEncryptionKey: encryptionKey,
+      encryptionKey: encryptionKey,
       best_score: 1000,
     };
 

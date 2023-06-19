@@ -9,10 +9,7 @@ import {
   FolderSharedOutlined,
   Cake,
 } from "@mui/icons-material";
-import {
-  uploadImageAndGetDownloadURL,
-  addDataToFirestore,
-} from "../../Utils/firebaseUtilFunctions";
+import { addDataToFirestore } from "../../Utils/firebaseUtilFunctions";
 import CropPage from "../../Utils/CropPage";
 import { v4 as uuidv4 } from "uuid";
 import NPackSelect from "../NPackSelect/NPackSelect";
@@ -37,14 +34,17 @@ const Home = () => {
   const [opencrop, setopencrop] = useState(false);
   const [send, setSend] = useState();
   const [fbimg, setfbimg] = useState();
-  const [imageAsFile, setImageAsFile] = useState("");
-  const [image_url, setimage_url] = useState();
+  const [encryptedImgUrl, setEncryptedImgUrl] = useState();
+  const [encryptionKey, setEncryptionKey] = useState();
   const [wishes, setwishes] = useState("");
   const [Bday_date, setBday_date] = useState(Date.now());
-
-  const dispatch = useDispatch();
   const auth = getAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const enKey = uuidv4();
+    setEncryptionKey(enKey);
+  }, []);
 
   useEffect(() => {
     auth.onAuthStateChanged(async (user) => {
@@ -68,18 +68,13 @@ const Home = () => {
   };
   const CreatePack = async (e) => {
     setloading(true);
-    var ud = uuidv4();
 
     try {
-      const storedImgURL = await uploadImageAndGetDownloadURL(
-        image_url,
-        `/images/slidePuzzle/${ud}`
-      );
-
       const nPackDocId = await addDataToFirestore({
         Folder_name: Folder_name,
         wishes: wishes,
-        fbimg: storedImgURL,
+        fbimg: encryptedImgUrl,
+        encryptionKey: encryptionKey,
         Bday_date: Bday_date,
         From_name: From_name,
         To_name: To_name,
@@ -93,7 +88,8 @@ const Home = () => {
       const liveLinksDocId = await addDataToFirestore({
         Folder_name: Folder_name,
         wishes: wishes,
-        fbimg: storedImgURL,
+        fbimg: encryptedImgUrl,
+        encryptionKey: encryptionKey,
         Bday_date: Bday_date,
         From_name: From_name,
         To_name: To_name,
@@ -292,9 +288,10 @@ const Home = () => {
                 />
                 {opencrop ? (
                   <CropPage
+                    encryptionKey={encryptionKey}
                     send={send}
                     setfbimg={setfbimg}
-                    setimage_url={setimage_url}
+                    setEncryptedImgUrl={setEncryptedImgUrl}
                     aspect_ratio={1 / 1}
                     opencrop={opencrop}
                     setopencrop={setopencrop}

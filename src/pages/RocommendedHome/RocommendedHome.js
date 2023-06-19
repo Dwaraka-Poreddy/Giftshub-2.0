@@ -14,10 +14,7 @@ import {
   CheckBoxOutlined,
   Cake,
 } from "@mui/icons-material";
-import {
-  uploadImageAndGetDownloadURL,
-  addDataToFirestore,
-} from "../../Utils/firebaseUtilFunctions";
+import { addDataToFirestore } from "../../Utils/firebaseUtilFunctions";
 import CropPage from "../../Utils/CropPage";
 import OwlCarousel from "react-owl-carousel";
 import "owl.carousel/dist/assets/owl.carousel.css";
@@ -119,10 +116,15 @@ function RocommendedHome({ history }) {
   const [opencrop, setopencrop] = useState(false);
   const [send, setSend] = useState();
   const [fbimg, setfbimg] = useState();
-  const [imageAsFile, setImageAsFile] = useState("");
-  const [image_url, setimage_url] = useState();
+  const [encryptedImgUrl, setEncryptedImgUrl] = useState();
+  const [encryptionKey, setEncryptionKey] = useState();
   const [wishes, setwishes] = useState("");
   const [Bday_date, setBday_date] = useState();
+
+  useEffect(() => {
+    const enKey = uuidv4();
+    setEncryptionKey(enKey);
+  }, []);
 
   $(document).ready(function() {
     $(".card").hover(
@@ -157,13 +159,8 @@ function RocommendedHome({ history }) {
   const CreatePack = async (e) => {
     setloading(true);
     e.preventDefault();
-    var ud = uuidv4();
 
     try {
-      const storedImgURL = await uploadImageAndGetDownloadURL(
-        image_url,
-        `/images/slidePuzzle/${ud}`
-      );
       var selectedpackorder = [];
       if (days_page.days_redirect === "2") {
         selectedpackorder = [...twopackorder];
@@ -178,7 +175,8 @@ function RocommendedHome({ history }) {
       const nPackDocId = await addDataToFirestore({
         Folder_name: Folder_name,
         wishes: wishes,
-        fbimg: storedImgURL,
+        fbimg: encryptedImgUrl,
+        encryptionKey: encryptionKey,
         Bday_date: Bday_date,
         From_name: From_name,
         To_name: To_name,
@@ -192,7 +190,8 @@ function RocommendedHome({ history }) {
       const liveLinksDocId = await addDataToFirestore({
         Folder_name: Folder_name,
         wishes: wishes,
-        fbimg: storedImgURL,
+        fbimg: encryptedImgUrl,
+        encryptionKey: encryptionKey,
         Bday_date: Bday_date,
         From_name: From_name,
         To_name: To_name,
@@ -210,50 +209,6 @@ function RocommendedHome({ history }) {
     }
   };
 
-  var responsive = {
-    0: {
-      items: 1,
-    },
-    600: {
-      items: 2,
-    },
-    1000: {
-      items: 4,
-    },
-  };
-  var responsive5 = {
-    0: {
-      items: 3,
-    },
-    600: {
-      items: 4,
-    },
-    1000: {
-      items: 5,
-    },
-  };
-  var responsive3 = {
-    0: {
-      items: 3,
-    },
-    600: {
-      items: 4,
-    },
-    1000: {
-      items: 5,
-    },
-  };
-  var responsive2 = {
-    0: {
-      items: 3,
-    },
-    600: {
-      items: 4,
-    },
-    1000: {
-      items: 5,
-    },
-  };
   return (
     <div>
       <Helmet>
@@ -717,9 +672,10 @@ function RocommendedHome({ history }) {
                           />
                           {opencrop ? (
                             <CropPage
+                              encryptionKey={encryptionKey}
                               send={send}
                               setfbimg={setfbimg}
-                              setimage_url={setimage_url}
+                              setEncryptedImgUrl={setEncryptedImgUrl}
                               aspect_ratio={1 / 1}
                               opencrop={opencrop}
                               setopencrop={setopencrop}
