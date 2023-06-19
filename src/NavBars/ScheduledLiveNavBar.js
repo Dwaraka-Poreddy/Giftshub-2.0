@@ -1,11 +1,14 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import firebase from "../firebase";
+import { doc } from "firebase/firestore";
+import { fStore } from "../firebase";
+import { useParams } from "react-router-dom";
+import { fetchDocumentFromFireStore } from "../Utils/firebaseUtilFunctions";
 import "./NavBar.css";
-function ScheduledLiveNavBar({ slug }) {
+function ScheduledLiveNavBar() {
+  const { slug } = useParams();
   const { daystep } = useSelector((state) => ({ ...state }));
-  const database = firebase.firestore();
   const [dataurl, setdataurl] = useState([]);
   const [navstate, setnavstate] = useState(false);
   useEffect(() => {
@@ -18,17 +21,21 @@ function ScheduledLiveNavBar({ slug }) {
       setnavstate(false);
     }
   };
-  async function getDoc() {
-    const snapshot = await database.collection("Livelinks").doc(slug).get();
-    const data = await snapshot.data().array_data;
-
-    data.map((item, index) => {
-      dataurl[index] = item.url;
-    });
+  async function getDocDataFromFireStore() {
+    const docRef = doc(fStore, "Livelinks", slug);
+    const datanew = await fetchDocumentFromFireStore(docRef)
+    console.log("NAVBARRR DATA: ", datanew);
+    if (datanew) {
+      datanew.array_data.map((item, index) => {
+        dataurl[index] = item.url;
+      });
+      console.log("NAVBARRR DATAURLLLL: ", dataurl);
+    } else {
+      console.error("Error fetching document data");
+    }
   }
   useEffect(async () => {
-    await getDoc();
-    print(daystep, "daystep");
+    await getDocDataFromFireStore();
   }, []);
 
   return (
@@ -66,7 +73,7 @@ function ScheduledLiveNavBar({ slug }) {
               </li>
               <li class="nav-item">
                 <a
-                  class={`nav-link js-scroll-trigger ${(daystep == null)&& active}`}
+                  class={`nav-link js-scroll-trigger active ${(daystep == null)}`}
                   href={`/scheduledlive/main/${slug}`}
                 >
                   Home

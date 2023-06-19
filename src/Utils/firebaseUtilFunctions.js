@@ -249,13 +249,18 @@ export async function updateFirestoreVariable({
   variableToUpdate,
   updatedValue,
 }) {
-  const documentRef = doc(
-    fStore,
-    parent_collection,
-    parent_document,
-    child_collection,
-    child_document
-  );
+  var documentRef;
+  if (child_collection) {
+    documentRef = doc(
+      fStore,
+      parent_collection,
+      parent_document,
+      child_collection,
+      child_document
+    );
+  } else {
+    documentRef = doc(fStore, parent_collection, parent_document);
+  }
 
   try {
     await updateDoc(documentRef, {

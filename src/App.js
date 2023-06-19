@@ -16,10 +16,18 @@ const SlidePuzzlePage = lazy(() => import("./SlidePuzzle/SlidePuzzlePage"));
 const LiveSlidePuzzle = lazy(() => import("./LivePages/LiveSlidePuzzle"));
 const Home = lazy(() => import("./pages/Home/Home"));
 const ContinuePack = lazy(() => import("./pages/ContinuePack/ContinuePack"));
-const RocommendedHome = lazy(() => import("./pages/RocommendedHome/RocommendedHome"));
+const RocommendedHome = lazy(() =>
+  import("./pages/RocommendedHome/RocommendedHome")
+);
 const ValentineHome = lazy(() => import("./pages/ValentineHome"));
 const SampleGifts = lazy(() => import("./SampleGifts/SampleGifts"));
 const UserPacksPage = lazy(() => import("./UserPages/UserPacksPage"));
+const ScheduledLiveMainPage = lazy(() =>
+  import("./ScheduledLivePages/ScheduledLiveMainPage")
+);
+const ScheduledLiveSlidePuzzle = lazy(() =>
+  import("./ScheduledLivePages/ScheduledLiveSlidePuzzle")
+);
 // const ThreeDCarouselPage = lazy(() =>
 //   import("./ThreeDCarousel/ThreeDCarouselPage")
 // );
@@ -120,9 +128,6 @@ const UserPacksPage = lazy(() => import("./UserPages/UserPacksPage"));
 // const ScheduledLiveMemoryGame = lazy(() =>
 //   import("./ScheduledLivePages/ScheduledLiveMemoryGame")
 // );
-// const ScheduledLiveSlidePuzzle = lazy(() =>
-//   import("./ScheduledLivePages/ScheduledLiveSlidePuzzle")
-// );
 // const ScheduledLiveNewsPaper = lazy(() =>
 //   import("./ScheduledLivePages/ScheduledLiveNewsPaper")
 // );
@@ -137,9 +142,6 @@ const UserPacksPage = lazy(() => import("./UserPages/UserPacksPage"));
 // );
 // const ScheduledLiveCubes = lazy(() =>
 //   import("./ScheduledLivePages/ScheduledLiveCubes")
-// );
-// const ScheduledLiveMainPage = lazy(() =>
-//   import("./ScheduledLivePages/ScheduledLiveMainPage")
 // );
 
 const App = () => {
@@ -187,7 +189,7 @@ const App = () => {
             <img src={require("./Images/giftgif.webm")} alt="starting gif" />
             {/* <LoadingOutlined /> */}
           </div>
-         }
+        }
       >
         <ToastContainer />
         <Routes>
@@ -200,7 +202,7 @@ const App = () => {
             
             path="/violetgreetingcard"
             element={<VioletGreetingCard />}
-          /> */ }
+          /> */}
           {/* <Route
             
             path="/envelopegreetingcard"
@@ -210,26 +212,26 @@ const App = () => {
             
             path="/browngreetingcard"
             element={<BrownGreetingCard />}
-          /> */ }
+          /> */}
           {/* 
           <Route  path="/challengePage" element={<ChallengePage />} />
-          <Route  path="/challenge" element={<Challenge />} /> */ }
-          <Route path="/aboutus" element={<AboutUs /> } />
-          <Route  path="/samplegifts" element={<SampleGifts />} />
+          <Route  path="/challenge" element={<Challenge />} /> */}
+          <Route path="/aboutus" element={<AboutUs />} />
+          <Route path="/samplegifts" element={<SampleGifts />} />
           {/* <Route  path="/aboutquizpage" element={<AboutQuizPage />} />
           <Route  path="/journeypage" element={<JourneyPage />} />
           <Route  path="/calendarpage" element={<CalendarPage />} />
-          <Route  path="/swatchbookpage" element={<SwatchBookPage />} /> */ }
-          <Route  path="/" element={<LandingPage />} />
-          <Route  path="/login" element={<Login />} />
-          <Route  path="/register/complete" element={<RegisterComplete />} />
-          <Route  path="/slidepuzzlepage" element={<SlidePuzzlePage />} />
+          <Route  path="/swatchbookpage" element={<SwatchBookPage />} /> */}
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register/complete" element={<RegisterComplete />} />
+          <Route path="/slidepuzzlepage" element={<SlidePuzzlePage />} />
           <Route path="*" element={<Error404Page />} />
-          <Route  path="/home" element={<Home />} />
-          <Route  path="/ContinuePack/:slug" element={<ContinuePack />} />
-          <Route  path="/recommendedhome" element={<RocommendedHome />} />
-          <Route  path="/valentinehome" element={<ValentineHome />} />
-          <Route  path="/userpackspage" element={<UserPacksPage />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/ContinuePack/:slug" element={<ContinuePack />} />
+          <Route path="/recommendedhome" element={<RocommendedHome />} />
+          <Route path="/valentinehome" element={<ValentineHome />} />
+          <Route path="/userpackspage" element={<UserPacksPage />} />
           {/* <Route  path="/animatedframe" element={<AnimatedFrame />} />
           <Route  path="/forgot/password" element={<ForgotPassword />} />
           <Route  path="/memorygamepage" element={<MemoryGamePage />} />
@@ -237,7 +239,7 @@ const App = () => {
           <Route  path="/newspaperpage" element={<NewsPaperPage />} />
           <Route  path="/cubespage" element={<CubesPage />} />
           <Route  path="/honeycombpage" element={<HoneyCombPage />} />
-          <Route  path="/magazinepage" element={<MagazinePage />} /> */ }
+          <Route  path="/magazinepage" element={<MagazinePage />} /> */}
           {/* <Route
             
             path="/opengreetingcardpage"
@@ -253,7 +255,7 @@ const App = () => {
             
             path="/splitwallimagePage"
             element={<SplitWallImagePage />}
-          /> */ }
+          /> */}
           {/* <Route  path="/threedimagepage" element={<ThreeDImagePage />} />
           <Route
             
@@ -274,52 +276,56 @@ const App = () => {
             path="/live/swatchbook/:slug"
             element={<LiveSwatchBook />}
           />
-          <Route  path="/live/splitwall/:slug" element={<LiveSplitWall />} /> */ }
+          <Route  path="/live/splitwall/:slug" element={<LiveSplitWall />} /> */}
           {/* <Route
             
             path="/live/specialcard/:slug"
             element={<LiveSpecialCard />}
-          /> */ }
+          /> */}
+          <Route path="/live/slidepuzzle/:slug" element={<LiveSlidePuzzle />} />
           <Route
-            
-            path="/live/slidepuzzle/:slug"
-            element={<LiveSlidePuzzle />}
+            path="/scheduledlive/main/:slug"
+            element={<ScheduledLiveMainPage />}
+          />
+          <Route
+            path="/scheduledlive/slidepuzzle/:id/:slug"
+            element={<ScheduledLiveSlidePuzzle />}
           />
           {/* <Route
             
             path="/live/threedimage/:slug"
             element={<LiveThreeDImage />}
-          /> */ }
-          {/* <Route  path="/live/newspaper/:slug" element={<LiveNewsPaper />} /> */ }
+          /> */}
+          {/* <Route  path="/live/newspaper/:slug" element={<LiveNewsPaper />} /> */}
           {/* <Route
             
             path="/live/opengreetingcard/:slug"
             element={<LiveOpenGreetingCard />}
-          /> */ }
+          /> */}
           {/* <Route
             
             path="/live/envelopegreetingcard/:slug"
             element={<LiveEnvelopeGreetingCard />}
-          /> */ }
+          /> */}
           {/* <Route  path="/live/honeycomb/:slug" element={<LiveHoneyComb />} />
-          <Route  path="/live/cubes/:slug" element={<LiveCubesPage />} /> */ }
+          <Route  path="/live/cubes/:slug" element={<LiveCubesPage />} /> */}
           {/* <Route
             
             path="/live/memorygame/:slug"
             element={<LiveMemoryGame />}
-          /> */ }
+          /> */}
           {/* <Route  path="/live/collage/:slug" element={<LiveCollage />} />
           <Route
             
            path="/live/animatedframe/:slug"
            element={<LiveAnimatedFramePage />}
-          /> */ }
-         {/* <Route  path="/live/magazine/:slug" element={<LiveMagazine />} />
+          /> */}
+          {/* <Route  path="/live/magazine/:slug" element={<LiveMagazine />} />
            <Route
            
              path="/scheduledlive/aboutquiz/:id/:slug"
              element={<ScheduledLiveAboutQuiz />}
-          /> */ }
+          /> */}
           {/* <Route
             
             path="/scheduledlive/challenge/:id/:slug"
@@ -349,7 +355,7 @@ const App = () => {
             
             path="/scheduledlive/animatedframe/:id/:slug"
             element={<ScheduledLiveAnimatedFrame />}
-          /> */ }
+          /> */}
           {/* <Route
             
             path="/scheduledlive/specialcard/:id/:slug"
@@ -377,23 +383,13 @@ const App = () => {
           />
           <Route
             
-            path="/scheduledlive/main/:slug"
-            element={<ScheduledLiveMainPage />}
-          />
-          <Route
-            
             path="/scheduledlive/opengreetingcard/:id/:slug"
             element={<ScheduledLiveOpenGreetCard />}
-          /> */ }
+          /> */}
           {/* <Route
             
             path="/scheduledlive/envelopegreetingcard/:id/:slug"
             element={<ScheduledLiveEnvelopeGreetCard />}
-          />
-          <Route
-            
-            path="/scheduledlive/slidepuzzle/:id/:slug"
-            element={<ScheduledLiveSlidePuzzle />}
           />
           <Route
             
@@ -409,7 +405,7 @@ const App = () => {
             
             path="/scheduledlive/calendar/:id/:slug"
             element={<ScheduledLiveCalendar />}
-          /> */ }
+          /> */}
         </Routes>
       </Suspense>
     </div>

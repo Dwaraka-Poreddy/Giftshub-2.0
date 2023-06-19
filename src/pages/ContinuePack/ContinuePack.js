@@ -26,9 +26,9 @@ import Loader from "react-loader-spinner";
 import { useDispatch, useSelector } from "react-redux";
 import { getAuth } from "firebase/auth";
 import { useNavigate, useParams } from "react-router-dom";
-import { getDoc, doc } from "firebase/firestore";
-import { auth, db, fStore, storage } from "../../firebase";
-import { fetchDocumentFromFireStore } from "../../Utils/firebaseUtilFunctions"
+import { doc } from "firebase/firestore";
+import { fStore } from "../../firebase";
+import { fetchDocumentFromFireStore } from "../../Utils/firebaseUtilFunctions";
 // import ScheduledAboutQuizPage from "../AboutQuiz/ScheduledAboutQuizPage";
 // import ScheduledAnimatedFrame from "../AnimatedFrames/ScheduledAnimatedFramePage";
 // import ScheduledCalendarPage from "../Calendar/ScheduledCalendarPage";
@@ -169,27 +169,25 @@ function ContinuePack() {
     console.log("useridif", useruid);
 
     const docRef = doc(fStore, "n-day-pack", useruid, "giftshub", slug);
-    const datanew = await fetchDocumentFromFireStore(docRef)
+    const datanew = await fetchDocumentFromFireStore(docRef);
     if (datanew) {
-        setdata1(datanew);
-        const data = datanew.array_data;
-        setdaycounter(data.length - activeStep - 1);
-        setmaxSteps(data.length);
-        data.forEach((item, index) => {
-          datacontent[index] = item.content;
-          dataid[index] = item.id;
-          dataurl[index] = item.url;
-        });
-      } else {
-        console.error("Error fetching document data");
-      }
+      setdata1(datanew);
+      const data = datanew.array_data;
+      setdaycounter(data.length - activeStep - 1);
+      setmaxSteps(data.length);
+      data.forEach((item, index) => {
+        datacontent[index] = item.content;
+        dataid[index] = item.id;
+        dataurl[index] = item.url;
+      });
+    } else {
+      console.error("Error fetching document data");
+    }
 
     await getDocnew();
     setloading(false);
 
-    setlivelink(
-      "http://update-image.web.app/scheduledlive/main/" + `${slug}`
-    );
+    setlivelink("http://update-image.web.app/scheduledlive/main/" + `${slug}`);
 
     await getDocnew();
   }

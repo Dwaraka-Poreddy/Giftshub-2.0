@@ -81,7 +81,7 @@ function ScheduledSlidePuzzlePage({
           slug
       );
       setpreviewlink("/scheduledlive/slidepuzzle/" + edit.text + "/" + slug);
-      setShowoptions(true)
+      setShowoptions(true);
     }
     setCLoading(false);
   }, []);
@@ -98,7 +98,7 @@ function ScheduledSlidePuzzlePage({
     setloading(true);
     var ud = uuidv4();
     var data;
-    if(!image_url){
+    if (!image_url) {
       data = {
         url: fbimg,
         best_score: 1000,
@@ -146,14 +146,26 @@ function ScheduledSlidePuzzlePage({
             "/" +
             slug;
 
-          updateFirestoreVariable({
-            parent_collection: "n-day-pack",
-            parent_document: user.uid,
-            child_collection: "giftshub",
-            child_document: slug,
-            variableToUpdate: "array_data",
-            updatedValue: newdata,
-          });
+          try {
+            await updateFirestoreVariable({
+              parent_collection: "n-day-pack",
+              parent_document: user.uid,
+              child_collection: "giftshub",
+              child_document: slug,
+              variableToUpdate: "array_data",
+              updatedValue: newdata,
+            });
+
+            await updateFirestoreVariable({
+              parent_collection: "Livelinks",
+              parent_document: slug,
+              variableToUpdate: "array_data",
+              updatedValue: newdata,
+            });
+          } catch (error) {
+            console.error("Error updating data: ", error);
+            return [];
+          }
         } else {
           console.error("Error fetching document data");
         }
