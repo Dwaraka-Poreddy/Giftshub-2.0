@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from "react";
 import SlidePuzzle from "../SlidePuzzle/SlidePuzzle";
 import SlidePuzzleAnswer from "../SlidePuzzle/SlidePuzzleAnswer";
-import { updateDataInRealTimeDataBase, getDataFromRealtimeDatabase } from "../Utils/firebaseUtilFunctions"
+import {
+  updateDataInRealTimeDataBase,
+  getDataFromRealtimeDatabase,
+} from "../Utils/firebaseUtilFunctions";
 import { useParams } from "react-router-dom";
+import CryptoJS from "crypto-js";
 import { toast } from "react-toastify";
 import "./LiveSlidePuzzle.css";
 import Loader from "react-loader-spinner";
@@ -12,19 +16,18 @@ function LiveAnimatedFramePage() {
   const [fbimg, setfbimg] = useState("");
   const [loading, setloading] = useState(true);
   const [bestscore, setbestscore] = useState();
+  const [theEncryptionKey, setTheEncryptionKey] = useState();
+  const [encryptedImage, setEncryptedImage] = useState();
   const [puzzlescore, setpuzzlescore] = useState(0);
   const handlepuzzlescore = (e) => {
     setpuzzlescore(e);
     if (e < bestscore) {
       const data = {
-        url: fbimg,
+        url: encryptedImage,
+        theEncryptionKey: theEncryptionKey,
         best_score: e,
-      }
-      updateDataInRealTimeDataBase(
-        data,
-        "SlidePuzzle",
-        slug
-      );
+      };
+      updateDataInRealTimeDataBase(data, "SlidePuzzle", slug);
       setbestscore(e);
       toast.success("You bet your previous best score, Keep playing!");
     }
@@ -33,20 +36,29 @@ function LiveAnimatedFramePage() {
     setloading(true);
 
     getDataFromRealtimeDatabase(`/SlidePuzzle/${slug}`)
-    .then((data) => {
-      if (data) {
-        var img = data.url;
-        setfbimg(img);
-        var bestscore = data.best_score;
-        setbestscore(bestscore);
-        console.log("Data from the database:", data);
-      } else {
-        console.log("No data available.");
-      }
-    })
-    .catch((error) => {
-      console.error("Error reading data:", error);
-    });
+      .then((data) => {
+        if (data) {
+          console.log("Data from the database:", data);
+          console.log("data.theEncryptionKey:", data.theEncryptionKey);
+          console.log("data.url:", data.url);
+          setTheEncryptionKey(data.theEncryptionKey);
+          setEncryptedImage(data.url)
+          const decryptedBytes = CryptoJS.AES.decrypt(
+            data.url,
+            data.theEncryptionKey
+          );
+          const decryptedImageURL = CryptoJS.enc.Utf8.stringify(decryptedBytes);
+          setfbimg(decryptedImageURL);
+          var bestscore = data.best_score;
+          setbestscore(bestscore);
+          console.log("Data from the database:", data);
+        } else {
+          console.log("No data available.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error reading data:", error);
+      });
 
     setloading(false);
   }, []);
@@ -70,8 +82,8 @@ function LiveAnimatedFramePage() {
         ) : (
           <center>
             {bestscore != 100000 && (
-              <center >
-                <h2>Best Score: {bestscore}</h2>
+              <center>
+                <h2>Your best score: {bestscore}</h2>
               </center>
             )}
             <div class="row">

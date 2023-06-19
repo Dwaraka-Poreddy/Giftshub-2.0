@@ -12,12 +12,24 @@ import {
   orderBy,
   getDocs,
 } from "firebase/firestore";
+import CryptoJS from "crypto-js";
+import { v4 as uuidv4 } from "uuid";
 import { ref as ref1, push, child, update, get } from "firebase/database";
 
 export function uploadImageAndGetDownloadURL(image_url, storagePath) {
+  const encryptionKey = uuidv4();
+
+  console.log("tupe:::",typeof(image_url))
+
+  const encryptedImage_url = CryptoJS.AES.encrypt(
+    JSON.stringify(image_url),
+    encryptionKey
+  ).toString();
+
+  console.log("encryptedImage_url:: ", encryptedImage_url);
   return new Promise((resolve, reject) => {
     const storageRef = ref(storage, storagePath);
-    const uploadTask = uploadBytesResumable(storageRef, image_url);
+    const uploadTask = uploadBytesResumable(storageRef, encryptedImage_url);
 
     uploadTask.on(
       "state_changed",
@@ -33,7 +45,7 @@ export function uploadImageAndGetDownloadURL(image_url, storagePath) {
       async () => {
         console.log("Image uploaded successfully");
         const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-        resolve(downloadURL);
+        resolve({ downloadURL, encryptionKey });
       }
     );
   });

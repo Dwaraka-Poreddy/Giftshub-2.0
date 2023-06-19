@@ -180,7 +180,7 @@ function ScheduledLiveSlidePuzzle() {
                     <center>
                       {bestscore != 100000 && (
                         <center>
-                          <h2>Best Score: {bestscore}</h2>
+                          <h2>Your best score: {bestscore}</h2>
                         </center>
                       )}
                     </center>

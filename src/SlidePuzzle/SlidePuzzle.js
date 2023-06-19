@@ -229,7 +229,6 @@ function SlidePuzzle({ fbimg, handlepuzzlescore }) {
   if (solved) {
     handlepuzzlescore(finalscore);
   }
-  console.log(fbimg, "qwerty", moves, "finalscore", finalscore);
   return React.createElement(
     "div",
     { className: "game-container scaled", id: "scaled" },

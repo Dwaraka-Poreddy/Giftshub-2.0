@@ -1,7 +1,5 @@
-import { makeStyles } from "@mui/styles";
-import { spacing } from "@mui/system";
 import { FlightTakeoff, Image, Share, Visibility } from "@mui/icons-material";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserView } from "react-device-detect";
 import Loader from "react-loader-spinner";
 import { Link } from "react-router-dom";
@@ -10,7 +8,6 @@ import { v4 as uuidv4 } from "uuid";
 import {
   updateDataInRealTimeDataBase,
   addDataToRealTimeDatabase,
-  uploadImageAndGetDownloadURL,
 } from "../Utils/firebaseUtilFunctions";
 import "../Buttons.css";
 import NavBar from "../NavBars/NavBar";
@@ -20,16 +17,6 @@ import CropPage from "../Utils/CropPage";
 import ShareView from "../Utils/Share";
 import SlidePuzzle from "./SlidePuzzle";
 import SlidePuzzleAnswer from "./SlidePuzzleAnswer";
-const secuseStyles = makeStyles((theme) => ({
-  root: {
-    "& > *": {
-      margin: spacing(0),
-    },
-  },
-  input: {
-    display: "none",
-  },
-}));
 
 function SlidePuzzlePage() {
   const [showoptions, setshowoptions] = useState(false);
@@ -39,9 +26,8 @@ function SlidePuzzlePage() {
   const [livelink, setlivelink] = useState();
   const [previewlink, setpreviewlink] = useState("");
   const [realTimeDBKey, setRealTimeDBKey] = useState("");
-  const [fireurl, setFireUrl] = useState("");
-  const [imageAsFile, setImageAsFile] = useState("");
-  const [image_url, setimage_url] = useState();
+  const [encryptedImgUrl, setEncryptedImgUrl] = useState();
+  const [encryptionKey, setEncryptionKey] = useState();
   const [opencrop, setopencrop] = useState(false);
   const [send, setSend] = useState();
   const [loading, setloading] = useState(false);
@@ -49,6 +35,11 @@ function SlidePuzzlePage() {
   const [fbimg, setfbimg] = useState(
     "https://firebasestorage.googleapis.com/v0/b/update-image.appspot.com/o/imp%2Ftom-and-jerry-hd-background.jpg?alt=media&token=a5fb8323-7899-46d7-8119-16b69e1e2531"
   );
+
+  useEffect(() => {
+    const enKey = uuidv4();
+    setEncryptionKey(enKey)
+  }, []);
 
   const handlepuzzlescore = (e) => {
     console.log("Yoooo");
@@ -65,13 +56,10 @@ function SlidePuzzlePage() {
 
   const handleFireBaseUpload = async () => {
     setloading(true);
-    var ud = uuidv4();
-    const storedImgURL = await uploadImageAndGetDownloadURL(
-      image_url,
-      `/images/slidePuzzle/${ud}`
-    );
+
     const data = {
-      url: storedImgURL,
+      url: encryptedImgUrl,
+      theEncryptionKey: encryptionKey,
       best_score: 1000,
     };
 
@@ -222,9 +210,10 @@ function SlidePuzzlePage() {
                   />
                   {opencrop ? (
                     <CropPage
+                      encryptionKey={encryptionKey}
                       send={send}
                       setfbimg={setfbimg}
-                      setimage_url={setimage_url}
+                      setEncryptedImgUrl={setEncryptedImgUrl}
                       aspect_ratio={1 / 1}
                       opencrop={opencrop}
                       setopencrop={setopencrop}

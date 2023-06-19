@@ -1,15 +1,10 @@
-import React, {
-  useMemo,
-  useState,
-  useCallback,
-  useRef,
-  useEffect,
-} from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import HeaderBtn from "../Studio/HeaderBtn";
 import { Modal, Fab } from "@mui/material";
 import ReactCrop from "react-image-crop";
 import { makeStyles } from "@mui/styles";
 import { Image, Close } from "@mui/icons-material";
+import CryptoJS from "crypto-js";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-image-crop/dist/ReactCrop.css";
 const useStyles = makeStyles({
@@ -25,7 +20,6 @@ const useStyles = makeStyles({
     marginBottom: "0vh",
     border: null,
     backgroundColor: "#009dd9",
-    // overflow: "auto",
     padding: "0 0 0 0",
   },
   DelBut: {
@@ -34,27 +28,6 @@ const useStyles = makeStyles({
     left: "250",
   },
 });
-
-// function generateDownload(canvas, crop) {
-//   if (!crop || !canvas) {
-//     return;
-//   }
-
-//   canvas.toBlob(
-//     (blob) => {
-//       const previewUrl = window.URL.createObjectURL(blob);
-
-//       const anchor = document.createElement('a');
-//       anchor.download = 'cropPreview.png';
-//       anchor.href = URL.createObjectURL(blob);
-//       anchor.click();
-
-//       window.URL.revokeObjectURL(previewUrl);
-//     },
-//     'image/png',
-//     1
-//   );
-// }
 
 function setCanvasImage(image, canvas, crop) {
   if (!crop || !canvas || !image) {
@@ -86,18 +59,17 @@ function setCanvasImage(image, canvas, crop) {
 }
 
 function CropPage({
+  encryptionKey,
   send,
   setfbimg,
-  setimage_url,
+  setEncryptedImgUrl,
   aspect_ratio,
   setopencrop,
   opencrop,
 }) {
   const classes = useStyles();
-  const [upImg, setUpImg] = useState(send);
   const previewCanvasRef = useRef(null);
   const imgRef = useRef(null);
-  const pixelRatio = window.devicePixelRatio || 1;
   const [completedCrop, setCompletedCrop] = useState(null);
   const def = {
     unit: "%",
@@ -142,19 +114,14 @@ function CropPage({
     return new Promise((resolve, reject) => {
       const canvas = getResizedCanvas(previewCanvas, crop.width, crop.height);
       var base64Image = canvas.toDataURL("image/jpeg", 1.0);
+      resolve(base64Image);
       setfbimg(base64Image);
-
-      var base64Img = base64Image.replace("data:image/jpeg;base64,", "");
-      // setimage_url(base64Img);
-
-      canvas.toBlob(
-        (blob) => {
-          resolve(blob);
-        },
-        "image/png",
-        1
-      );
-
+      const imageBytes = CryptoJS.enc.Utf8.parse(base64Image);
+      const encryptedImage_url = CryptoJS.AES.encrypt(
+        imageBytes,
+        encryptionKey
+      ).toString();
+      setEncryptedImgUrl(encryptedImage_url);
       setopencrop(false);
     });
   }
@@ -166,7 +133,6 @@ function CropPage({
           display: "flex",
           justifyContent: "center",
           marginRight: "auto",
-          // overflow: "hidden",
           alignItems: "center",
         }}
         open={opencrop}
@@ -215,14 +181,6 @@ function CropPage({
                           previewCanvasRef.current,
                           completedCrop
                         )
-                          .then((blob) => {
-                            console.log("Dwaraka BLOB");
-                            console.log(blob);
-                            setimage_url(blob)
-                          })
-                          .catch((error) => {
-                            console.log("Dwaraka NO BLOB");
-                          });
                       }}
                       Icon={Image}
                       title=" Use cropped image"
