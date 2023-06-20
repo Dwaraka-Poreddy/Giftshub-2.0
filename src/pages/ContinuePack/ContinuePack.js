@@ -116,6 +116,7 @@ function ContinuePack() {
   const [data1, setdata1] = useState();
   const [daycounter, setdaycounter] = useState();
   const [datacontent, setdatacontent] = useState([]);
+  const [encryptionKey, setEncryptionKey] = useState();
   const [dataid, setdataid] = useState([]);
   const [dataurl, setdataurl] = useState([]);
   const [openModal, setopenModal] = useState(false);
@@ -172,6 +173,7 @@ function ContinuePack() {
     const datanew = await fetchDocumentFromFireStore(docRef);
     if (datanew) {
       setdata1(datanew);
+      setEncryptionKey(datanew.encryptionKey);
       const data = datanew.array_data;
       setdaycounter(data.length - activeStep - 1);
       setmaxSteps(data.length);
@@ -344,6 +346,7 @@ function ContinuePack() {
           setTourOpend={setTourOpend}
           step={step}
           slug={slag}
+          currentEncryptionKey={encryptionKey}
           getDoc={getDocFromFStore}
         />
       );

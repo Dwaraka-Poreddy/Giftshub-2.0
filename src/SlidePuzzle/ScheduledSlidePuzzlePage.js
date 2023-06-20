@@ -38,6 +38,7 @@ const secuseStyles = makeStyles(() => ({
 function ScheduledSlidePuzzlePage({
   step,
   slug,
+  currentEncryptionKey,
   getDoc,
   isTourOpen,
   setTourOpend,
@@ -51,7 +52,7 @@ function ScheduledSlidePuzzlePage({
   const [livelink, setlivelink] = useState();
   const [previewlink, setpreviewlink] = useState("");
   const [encryptedImgUrl, setEncryptedImgUrl] = useState();
-  const [encryptionKey, setEncryptionKey] = useState();
+  const [encryptionKey, setEncryptionKey] = useState(currentEncryptionKey);
   const [opencrop, setopencrop] = useState(false);
   const [send, setSend] = useState();
   const [bestscore, setbestscore] = useState();
@@ -60,25 +61,20 @@ function ScheduledSlidePuzzlePage({
     "https://firebasestorage.googleapis.com/v0/b/update-image.appspot.com/o/imp%2Ftom-and-jerry-hd-background.jpg?alt=media&token=a5fb8323-7899-46d7-8119-16b69e1e2531"
   );
 
-  useEffect(() => {
-    const enKey = uuidv4();
-    setEncryptionKey(enKey)
-  }, []);
-
   const handlepuzzlescore = (e) => {
     console.log("Yoooo");
   };
 
   useEffect(() => {
     setCLoading(true);
+    console.log("encryptionKey::::::", encryptionKey);
     if (edit.text != "") {
       getDataFromRealtimeDatabase(`/SlidePuzzle/${edit.text}`).then((data) => {
         if (data) {
-          setEncryptionKey(data.encryptionKey);
           setEncryptedImgUrl(data.url)
           const decryptedBytes = CryptoJS.AES.decrypt(
             data.url,
-            data.encryptionKey
+            encryptionKey
           );
           const decryptedImageURL = CryptoJS.enc.Utf8.stringify(decryptedBytes);
           setfbimg(decryptedImageURL);
@@ -115,13 +111,11 @@ function ScheduledSlidePuzzlePage({
     if (!encryptedImgUrl) {
       data = {
         url: fbimg,
-        encryptionKey: encryptionKey,
         best_score: 1000,
       };
     } else {
       data = {
         url: encryptedImgUrl,
-        encryptionKey: encryptionKey,
         best_score: 1000,
       };
     }

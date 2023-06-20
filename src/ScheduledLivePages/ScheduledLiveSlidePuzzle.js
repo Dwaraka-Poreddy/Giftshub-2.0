@@ -6,7 +6,12 @@ import { toast } from "react-toastify";
 import ScheduledLiveNavBar from "../NavBars/ScheduledLiveNavBar";
 import { doc } from "firebase/firestore";
 import { fStore } from "../firebase";
-import { updateDataInRealTimeDataBase, getDataFromRealtimeDatabase, fetchDocumentFromFireStore } from "../Utils/firebaseUtilFunctions"
+import CryptoJS from "crypto-js";
+import {
+  updateDataInRealTimeDataBase,
+  getDataFromRealtimeDatabase,
+  fetchDocumentFromFireStore,
+} from "../Utils/firebaseUtilFunctions";
 import SlidePuzzle from "../SlidePuzzle/SlidePuzzle";
 import SlidePuzzleAnswer from "../SlidePuzzle/SlidePuzzleAnswer";
 import CircleTimer from "./CircleTimer";
@@ -18,6 +23,8 @@ function ScheduledLiveSlidePuzzle() {
   const [Livelinks, setLivelinks] = useState("");
   const [loading, setloading] = useState(true);
   const [dataurl, setdataurl] = useState([]);
+  const [decryptionKey, setDecryptionKey] = useState();
+  const [encryptedImage, setEncryptedImage] = useState();
   const [today, settoday] = useState();
   const [bestscore, setbestscore] = useState();
   const [puzzlescore, setpuzzlescore] = useState(0);
@@ -25,7 +32,7 @@ function ScheduledLiveSlidePuzzle() {
     setpuzzlescore(e);
     if (e < bestscore) {
       const data = {
-        url: fbimg,
+        url: encryptedImage,
         best_score: e,
       };
       updateDataInRealTimeDataBase(data, "SlidePuzzle", slug);
@@ -33,12 +40,13 @@ function ScheduledLiveSlidePuzzle() {
       toast.success("You bet your previous best score, Keep playing!");
     }
   };
+
   async function getDocDataFromFireStore() {
-    setloading(true);
     const docRef = doc(fStore, "Livelinks", slug);
     const datanew = await fetchDocumentFromFireStore(docRef);
     if (datanew) {
       setLivelinks(datanew);
+      setDecryptionKey(datanew.encryptionKey);
       datanew.array_data.map((item, index) => {
         if (item.id == "puzzle") {
           settoday(index);
@@ -49,26 +57,27 @@ function ScheduledLiveSlidePuzzle() {
         }
         dataurl[index] = item.url;
       });
+      return datanew.encryptionKey;
     } else {
       console.error("Error fetching document data");
+      return null;
     }
-    setloading(false);
   }
-  useEffect(async () => {
-    console.log("DWARAKA SLUGGGGGGG: ", slug);
-    console.log("DWARAKA IDDDDDD: ", id);
-    await getDocDataFromFireStore();
-    // setloading(false);
-  }, []);
-
   useEffect(async () => {
     setloading(true);
 
+    const keyForDecryption = await getDocDataFromFireStore();
+    if(keyForDecryption){
     getDataFromRealtimeDatabase(`/SlidePuzzle/${id}`)
     .then((data) => {
       if (data) {
-        var img = data.url;
-        setfbimg(img);
+        setEncryptedImage(data.url);
+        const decryptedBytes = CryptoJS.AES.decrypt(
+          data.url,
+          keyForDecryption
+        );
+        const decryptedImageURL = CryptoJS.enc.Utf8.stringify(decryptedBytes);
+        setfbimg(decryptedImageURL);
         var bestscore = data.best_score;
         setbestscore(bestscore);
         console.log("Data from the database:", data);
@@ -79,7 +88,9 @@ function ScheduledLiveSlidePuzzle() {
     .catch((error) => {
       console.error("Error reading data:", error);
     });
-
+  } else {
+    toast.error("Could not fetch the data")
+  }
     setloading(false);
   }, []);
 

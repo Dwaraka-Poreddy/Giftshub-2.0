@@ -38,11 +38,12 @@ function LiveAnimatedFramePage() {
     getDataFromRealtimeDatabase(`/SlidePuzzle/${slug}`)
       .then((data) => {
         if (data) {
+          console.log("data::: ", data);
           setTheEncryptionKey(data.theEncryptionKey);
           setEncryptedImage(data.url)
           const decryptedBytes = CryptoJS.AES.decrypt(
             data.url,
-            data.theEncryptionKey
+            data.encryptionKey
           );
           const decryptedImageURL = CryptoJS.enc.Utf8.stringify(decryptedBytes);
           setfbimg(decryptedImageURL);
