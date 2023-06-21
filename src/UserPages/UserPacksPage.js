@@ -13,7 +13,7 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
-import { fetchUserAllPackData } from "../Utils/firebaseUtilFunctions";
+import { fetchUserAllPackData, decryptedData } from "../Utils/firebaseUtilFunctions";
 import NavBar from "../NavBars/NavBar";
 import Footer from "../Footers/Footer";
 import $ from "jquery";
@@ -146,8 +146,8 @@ function UserPacksPage() {
                   <h5 class="card-header userpackscardheader">
                     {" "}
                     <div class="row">
-                      <div class="col-6">{gift.Folder_name}</div>{" "}
-                      <div class="col-6">{gift.Bday_date.toLocaleString()}</div>{" "}
+                      <div class="col-6">{decryptedData(gift.Folder_name, gift.encryptionKey)}</div>{" "}
+                      <div class="col-6">{decryptedData(gift.Bday_date, gift.encryptionKey).toLocaleString()}</div>{" "}
                     </div>
                   </h5>
                   <div class="card-body">
@@ -157,7 +157,7 @@ function UserPacksPage() {
                           <div class="row">
                             <div className="userpackspkname" class="col-12  ">
                               <h4 className="userpackspknametext">
-                                {gift.To_name.substring(0, 10)}
+                                {decryptedData(gift.To_name, gift.encryptionKey).substring(0, 10)}
                               </h4>
                             </div>
                             <div class="col-6 col-md-12">
