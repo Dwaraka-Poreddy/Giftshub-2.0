@@ -6,9 +6,7 @@ import Loader from "react-loader-spinner";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import CryptoJS from "crypto-js";
 import Tour from "reactour";
-import { v4 as uuidv4 } from "uuid";
 import "../Buttons.css";
 import { fStore } from "../firebase";
 import { doc } from "firebase/firestore";
@@ -18,6 +16,7 @@ import {
   updateDataInRealTimeDataBase,
   getDataFromRealtimeDatabase,
   addDataToRealTimeDatabase,
+  decryptedData,
 } from "../Utils/firebaseUtilFunctions";
 import HeaderBtn from "../Studio/HeaderBtn";
 import Copy from "../Utils/Copy";
@@ -46,7 +45,7 @@ function ScheduledSlidePuzzlePage({
   const [showoptions, setShowoptions] = useState(false);
   const [accentColor, setaccentColor] = useState("#70cff3");
   let { edit } = useSelector((state) => ({ ...state }));
-  const [Cloading, setCLoading] = useState(false);
+  const [Cloading, setCLoading] = useState(true);
   const [loading, setloading] = useState(false);
   const secclasses = secuseStyles();
   const [livelink, setlivelink] = useState();
@@ -67,17 +66,12 @@ function ScheduledSlidePuzzlePage({
 
   useEffect(() => {
     setCLoading(true);
-    console.log("encryptionKey::::::", encryptionKey);
+    console.log("Cloading, ", Cloading);
     if (edit.text != "") {
       getDataFromRealtimeDatabase(`/SlidePuzzle/${edit.text}`).then((data) => {
         if (data) {
           setEncryptedImgUrl(data.url)
-          const decryptedBytes = CryptoJS.AES.decrypt(
-            data.url,
-            encryptionKey
-          );
-          const decryptedImageURL = CryptoJS.enc.Utf8.stringify(decryptedBytes);
-          setfbimg(decryptedImageURL);
+          setfbimg(decryptedData(data.url, encryptionKey));
           var bestscore = data.best_score;
           setbestscore(bestscore);
           console.log("Data from the database:", data);

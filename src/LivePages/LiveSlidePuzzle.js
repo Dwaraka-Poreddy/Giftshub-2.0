@@ -4,9 +4,9 @@ import SlidePuzzleAnswer from "../SlidePuzzle/SlidePuzzleAnswer";
 import {
   updateDataInRealTimeDataBase,
   getDataFromRealtimeDatabase,
+  decryptedData,
 } from "../Utils/firebaseUtilFunctions";
 import { useParams } from "react-router-dom";
-import CryptoJS from "crypto-js";
 import { toast } from "react-toastify";
 import "./LiveSlidePuzzle.css";
 import Loader from "react-loader-spinner";
@@ -41,12 +41,7 @@ function LiveAnimatedFramePage() {
           console.log("data::: ", data);
           setTheEncryptionKey(data.theEncryptionKey);
           setEncryptedImage(data.url)
-          const decryptedBytes = CryptoJS.AES.decrypt(
-            data.url,
-            data.encryptionKey
-          );
-          const decryptedImageURL = CryptoJS.enc.Utf8.stringify(decryptedBytes);
-          setfbimg(decryptedImageURL);
+          setfbimg(decryptedData(data.url, data.encryptionKey));
           var bestscore = data.best_score;
           setbestscore(bestscore);
           console.log("Data from the database:", data);

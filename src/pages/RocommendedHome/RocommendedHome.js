@@ -647,7 +647,6 @@ function RocommendedHome({ history }) {
                           defaultValue={Bday_date}
                           className={classes.textField}
                           onChange={(e) => {
-                            console.log(Bday_date, "birthday", e.target.value);
                             setBday_date(e.target.value.toLocaleString());
                           }}
                           InputLabelProps={{

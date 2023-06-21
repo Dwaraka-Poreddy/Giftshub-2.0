@@ -15,40 +15,16 @@ import {
 import CryptoJS from "crypto-js";
 import { v4 as uuidv4 } from "uuid";
 import { ref as ref1, push, child, update, get } from "firebase/database";
+import { data } from "jquery";
 
-export function uploadImageAndGetDownloadURL(image_url, storagePath) {
-  const encryptionKey = uuidv4();
+export function encryptedData(data, encryptionKey) {
+  const encryptedBytes = CryptoJS.enc.Utf8.parse(data);
+  return CryptoJS.AES.encrypt(encryptedBytes, encryptionKey).toString();
+}
 
-  console.log("tupe:::",typeof(image_url))
-
-  const encryptedImage_url = CryptoJS.AES.encrypt(
-    JSON.stringify(image_url),
-    encryptionKey
-  ).toString();
-
-  console.log("encryptedImage_url:: ", encryptedImage_url);
-  return new Promise((resolve, reject) => {
-    const storageRef = ref(storage, storagePath);
-    const uploadTask = uploadBytesResumable(storageRef, encryptedImage_url);
-
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        const progress =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log("Upload is " + progress + "% done");
-      },
-      (error) => {
-        console.log(error);
-        reject(error);
-      },
-      async () => {
-        console.log("Image uploaded successfully");
-        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-        resolve({ downloadURL, encryptionKey });
-      }
-    );
-  });
+export function decryptedData(data, decryptionKey) {
+  const decryptedBytes = CryptoJS.AES.decrypt(data, decryptionKey);
+  return CryptoJS.enc.Utf8.stringify(decryptedBytes);
 }
 
 export async function updateDataInRealTimeDataBase(
@@ -103,77 +79,6 @@ export function getDataFromRealtimeDatabase(realtimeDataPath) {
   });
 }
 
-export async function addMultiDayPackageDataToFirestore({
-  Folder_name,
-  wishes,
-  fbimg,
-  Bday_date,
-  From_name,
-  To_name,
-  array_data,
-  parent_collection,
-  parent_document,
-  child_collection,
-}) {
-  const collectionPath = collection(
-    fStore,
-    parent_collection,
-    parent_document,
-    child_collection
-  );
-
-  try {
-    const docRef = await addDoc(collectionPath, {
-      Folder_name,
-      wishes,
-      fbimg,
-      Bday_date,
-      From_name,
-      To_name,
-      array_data,
-      timestamp: serverTimestamp(),
-    });
-    console.log("Document written with ID: ", docRef.id);
-    return docRef.id;
-  } catch (error) {
-    console.error("Error adding document: ", error);
-    return null;
-  }
-}
-
-export async function addLivelinksDataToFirestore({
-  Folder_name,
-  wishes,
-  fbimg,
-  Bday_date,
-  From_name,
-  To_name,
-  array_data,
-  parent_collection,
-  parent_document,
-}) {
-  const collectionPath = collection(fStore, parent_collection);
-  const documentPath = doc(collectionPath, parent_document);
-
-  try {
-    const docRef = await setDoc(documentPath, {
-      Folder_name: Folder_name,
-      wishes: wishes,
-      fbimg: fbimg,
-      From_name: From_name,
-      Bday_date: Bday_date,
-      To_name: To_name,
-      array_data: array_data,
-      timestamp: serverTimestamp(),
-    });
-    console.log("Document updated successfully");
-    return docRef.id;
-  } catch (error) {
-    console.error("Error updating document: ", error);
-    return null;
-  }
-}
-
 export async function addDataToFirestore({
   Folder_name,
   wishes,
@@ -201,19 +106,17 @@ export async function addDataToFirestore({
     documentPath = doc(collectionPath, parent_document);
   }
 
-  console.log(addData, "hmmmmm", collectionPath);
-
   try {
     let docRef;
     if (addData) {
       docRef = await addDoc(collectionPath, {
-        Folder_name,
-        wishes,
+        Folder_name: encryptedData(Folder_name, encryptionKey),
+        wishes: encryptedData(wishes, encryptionKey),
         fbimg,
         encryptionKey,
-        Bday_date,
-        From_name,
-        To_name,
+        Bday_date: encryptedData(Bday_date, encryptionKey),
+        From_name: encryptedData(From_name, encryptionKey),
+        To_name: encryptedData(To_name, encryptionKey),
         array_data,
         timestamp: serverTimestamp(),
       });
@@ -221,14 +124,14 @@ export async function addDataToFirestore({
       return docRef.id;
     } else {
       await setDoc(documentPath, {
-        Folder_name,
-        wishes,
+        Folder_name: encryptedData(Folder_name, encryptionKey),
+        wishes: encryptedData(wishes, encryptionKey),
         fbimg,
         encryptionKey,
-        Bday_date,
-        From_name,
-        To_name,
-        array_data: array_data,
+        Bday_date: encryptedData(Bday_date, encryptionKey),
+        From_name: encryptedData(From_name, encryptionKey),
+        To_name: encryptedData(To_name, encryptionKey),
+        array_data,
         timestamp: serverTimestamp(),
       });
       console.log("Document operation successful. ");
@@ -245,6 +148,13 @@ export async function fetchDocumentFromFireStore(docRef) {
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
       const datanew = docSnap.data();
+      const decryptionKey = datanew.encryptionKey;
+      datanew.wishes = decryptedData(datanew.wishes, decryptionKey)
+      datanew.Folder_name = decryptedData(datanew.Folder_name, decryptionKey)
+      datanew.From_name = decryptedData(datanew.From_name, decryptionKey)
+      datanew.Bday_date = decryptedData(datanew.Bday_date, decryptionKey)
+      datanew.To_name = decryptedData(datanew.To_name, decryptionKey)
+      datanew.fbimg = decryptedData(datanew.fbimg, decryptionKey)
       return datanew;
     } else {
       console.log("Document does not exist");

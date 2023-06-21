@@ -24,12 +24,10 @@ function ScheduledLiveNavBar() {
   async function getDocDataFromFireStore() {
     const docRef = doc(fStore, "Livelinks", slug);
     const datanew = await fetchDocumentFromFireStore(docRef)
-    console.log("NAVBARRR DATA: ", datanew);
     if (datanew) {
       datanew.array_data.map((item, index) => {
         dataurl[index] = item.url;
       });
-      console.log("NAVBARRR DATAURLLLL: ", dataurl);
     } else {
       console.error("Error fetching document data");
     }

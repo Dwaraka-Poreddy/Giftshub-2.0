@@ -36,7 +36,7 @@ function ScheduledLiveChallenge({ match }) {
   }
   useEffect(() => {
     getDoc();
-    console.log(Livelinks, "liveData");
+
     console.log(match.params.slug, "slug", match.params.id, "id");
   }, []);
   useEffect(() => {

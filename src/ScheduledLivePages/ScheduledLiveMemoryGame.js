@@ -55,7 +55,6 @@ export default function ScheduledLiveMemoryGame({ match }) {
   }
   useEffect(async () => {
     await getDoc();
-    console.log(Livelinks, "liveData");
     console.log(match.params.slug, "slug", match.params.id, "id");
   }, []);
 

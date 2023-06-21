@@ -6,11 +6,11 @@ import { toast } from "react-toastify";
 import ScheduledLiveNavBar from "../NavBars/ScheduledLiveNavBar";
 import { doc } from "firebase/firestore";
 import { fStore } from "../firebase";
-import CryptoJS from "crypto-js";
 import {
   updateDataInRealTimeDataBase,
   getDataFromRealtimeDatabase,
   fetchDocumentFromFireStore,
+  decryptedData,
 } from "../Utils/firebaseUtilFunctions";
 import SlidePuzzle from "../SlidePuzzle/SlidePuzzle";
 import SlidePuzzleAnswer from "../SlidePuzzle/SlidePuzzleAnswer";
@@ -72,15 +72,10 @@ function ScheduledLiveSlidePuzzle() {
     .then((data) => {
       if (data) {
         setEncryptedImage(data.url);
-        const decryptedBytes = CryptoJS.AES.decrypt(
-          data.url,
-          keyForDecryption
-        );
-        const decryptedImageURL = CryptoJS.enc.Utf8.stringify(decryptedBytes);
-        setfbimg(decryptedImageURL);
+        setfbimg(decryptedData(data.url,
+          keyForDecryption));
         var bestscore = data.best_score;
         setbestscore(bestscore);
-        console.log("Data from the database:", data);
       } else {
         console.log("No data available.");
       }

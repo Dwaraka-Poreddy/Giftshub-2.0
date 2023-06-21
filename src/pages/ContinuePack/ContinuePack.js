@@ -167,7 +167,6 @@ function ContinuePack() {
     if (!useruid) {
       useruid = user.uid;
     }
-    console.log("useridif", useruid);
 
     const docRef = doc(fStore, "n-day-pack", useruid, "giftshub", slug);
     const datanew = await fetchDocumentFromFireStore(docRef);

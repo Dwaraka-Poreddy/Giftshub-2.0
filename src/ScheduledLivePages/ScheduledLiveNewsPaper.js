@@ -23,7 +23,6 @@ function ScheduledLiveNewsPaper({ match }) {
       .doc(match.params.slug)
       .get();
     console.log(today, "snapshot.data() today");
-    console.log(snapshot.data().array_data, "snapshot.data().array_data");
     console.log(
       snapshot.data().array_data.length,
       "snapshot.data().array_data.length"

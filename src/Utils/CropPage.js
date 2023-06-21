@@ -4,7 +4,7 @@ import { Modal, Fab } from "@mui/material";
 import ReactCrop from "react-image-crop";
 import { makeStyles } from "@mui/styles";
 import { Image, Close } from "@mui/icons-material";
-import CryptoJS from "crypto-js";
+import { encryptedData } from "./firebaseUtilFunctions"
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-image-crop/dist/ReactCrop.css";
 const useStyles = makeStyles({
@@ -116,12 +116,7 @@ function CropPage({
       var base64Image = canvas.toDataURL("image/jpeg", 1.0);
       resolve(base64Image);
       setfbimg(base64Image);
-      const imageBytes = CryptoJS.enc.Utf8.parse(base64Image);
-      const encryptedImage_url = CryptoJS.AES.encrypt(
-        imageBytes,
-        encryptionKey
-      ).toString();
-      setEncryptedImgUrl(encryptedImage_url);
+      setEncryptedImgUrl(encryptedData(base64Image, encryptionKey));
       setopencrop(false);
     });
   }
