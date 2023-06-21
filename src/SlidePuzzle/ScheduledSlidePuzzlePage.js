@@ -70,7 +70,7 @@ function ScheduledSlidePuzzlePage({
     if (edit.text != "") {
       getDataFromRealtimeDatabase(`/SlidePuzzle/${edit.text}`).then((data) => {
         if (data) {
-          setEncryptedImgUrl(data.url)
+          setEncryptedImgUrl(data.url);
           setfbimg(decryptedData(data.url, encryptionKey));
           var bestscore = data.best_score;
           setbestscore(bestscore);
@@ -177,6 +177,8 @@ function ScheduledSlidePuzzlePage({
     }
     {
       edit.text != "" && toast.success("Slide Puzzle updated successfully");
+      getDoc();
+      setloading(false);
     }
   };
 
@@ -286,14 +288,14 @@ function ScheduledSlidePuzzlePage({
                   />
                   {opencrop ? (
                     <CropPage
-                    encryptionKey={encryptionKey}
-                    send={send}
-                    setfbimg={setfbimg}
-                    setEncryptedImgUrl={setEncryptedImgUrl}
-                    aspect_ratio={1 / 1}
-                    opencrop={opencrop}
-                    setopencrop={setopencrop}
-                  />
+                      encryptionKey={encryptionKey}
+                      send={send}
+                      setfbimg={setfbimg}
+                      setEncryptedImgUrl={setEncryptedImgUrl}
+                      aspect_ratio={1 / 1}
+                      opencrop={opencrop}
+                      setopencrop={setopencrop}
+                    />
                   ) : null}
                   <label htmlFor="LocalfileInput">
                     <HeaderBtn Icon={Image} title="Change  image " />

@@ -81,8 +81,6 @@ function ValentineHome({ history }) {
       ismailsent: false,
       content: "Animated Frame ",
       url: "",
-      img:
-        "https://firebasestorage.googleapis.com/v0/b/update-image.appspot.com/o/imp%2FAnimatedFrames.PNG?alt=media&token=349119f7-5722-4887-8bd7-c4586f916f94",
     },
     {
       id: "memorygame",
@@ -103,8 +101,6 @@ function ValentineHome({ history }) {
       ismailsent: false,
       content: "3D Carousel",
       url: "",
-      img:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS60_0gL8ZRN3M91p7rKmcrV8mU_hL3bbejKA&usqp=CAU",
     },
     {
       id: "greetingcard",
@@ -123,16 +119,12 @@ function ValentineHome({ history }) {
       ismailsent: false,
       content: "About Quiz",
       url: "",
-      img:
-        "https://firebasestorage.googleapis.com/v0/b/update-image.appspot.com/o/imp%2Fmemo.PNG?alt=media&token=beeb8d64-7501-4051-91e9-d15ba8977de4",
     },
     {
       id: "challenge",
       ismailsent: false,
       content: "Challenge",
       url: "",
-      img:
-        "https://img.timeinc.net/time/images/covers/asia/2012/20121105_600.jpg",
     },
   ]);
 

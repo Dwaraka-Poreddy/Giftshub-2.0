@@ -134,20 +134,30 @@ function ContinuePack() {
     });
   }, []);
 
-  async function getDocnew() {
+  async function reloadMobileStepper() {
+    console.log("inside :reloadMobileStepper:: , dataurl");
+    const newCompleted = completed;
     dataurl.map((item, index) => {
       if (item != "") {
-        const newCompleted = completed;
         newCompleted[index] = true;
-        setCompleted(newCompleted);
       }
     });
+    newCompleted[activeStep] = true;
+    setCompleted(newCompleted);
+    console.log("datauri in newcompleted::: ", completed);
     for (var i = 0; i < dataurl.length; i++) {
       if (dataurl[i] == "") {
         setActiveStep(i);
         break;
       }
     }
+    setloading(true);
+    await getDocFromFStore(user.uid);
+    getDocnew()
+    setloading(false);
+  }
+  async function getDocnew() {
+    console.log("datauri in continePack::: ", dataurl);
 
     dispatch({
       type: "EDIT_SCHEDULED",
@@ -190,7 +200,7 @@ function ContinuePack() {
 
     setlivelink("http://update-image.web.app/scheduledlive/main/" + `${slug}`);
 
-    await getDocnew();
+    // await reloadMobileStepper();
   }
   const setTourOpend = (e) => {
     setIsTourOpen(e);
@@ -346,7 +356,7 @@ function ContinuePack() {
           step={step}
           slug={slag}
           currentEncryptionKey={encryptionKey}
-          getDoc={getDocFromFStore}
+          getDoc={reloadMobileStepper}
         />
       );
     }

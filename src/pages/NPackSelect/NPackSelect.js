@@ -3,135 +3,137 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import $ from "jquery";
 import { SyncAlt } from "@mui/icons-material";
 import "./NPackSelect.css";
+const allCompBannermgs = {
+  magazine: require("../../Images/cardimages/magazine.PNG"),
+  challenge: require("../../Images/cardimages/challenge.PNG"),
+  aboutquiz: require("../../Images/cardimages/aboutquiz.PNG"),
+  calendar: require("../../Images/cardimages/calender.PNG"),
+  threedcarousel: require("../../Images/cardimages/3dcarousel.PNG"),
+  honeycomb: require("../../Images/cardimages/honeycomb.PNG"),
+  journey: require("../../Images/cardimages/journey.PNG"),
+  swatchbook: require("../../Images/cardimages/swatchBook.PNG"),
+  puzzle:
+    "https://firebasestorage.googleapis.com/v0/b/update-image.appspot.com/o/imp%2Ftom-and-jerry-hd-background.jpg?alt=media&token=a5fb8323-7899-46d7-8119-16b69e1e2531",
+  specialcard: require("../../Images/cardimages/specialCard.PNG"),
+  animatedframe: require("../../Images/cardimages/animatedFrames.PNG"),
+  threedimage:
+    "https://firebasestorage.googleapis.com/v0/b/update-image.appspot.com/o/imp%2FthreeDsqr.PNG?alt=media&token=89f9386d-931d-4642-a744-761ef2b97f2d",
+  greetingcard: require("../../Images/cardimages/greetingcardviolet.PNG"),
+  cubes: require("../../Images/cardimages/3dheart.PNG"),
+  memorygame: require("../../Images/cardimages/memorygame.PNG"),
+  collage:
+    "https://firebasestorage.googleapis.com/v0/b/update-image.appspot.com/o/imp%2FcollagePNG.PNG?alt=media&token=145fccf1-8bc0-4615-9ebf-8dc87fdfcae0",
+  newspaper: require("../../Images/cardimages/newspaper.PNG"),
+  envelopegreetingcard: require("../../Images/cardimages/greetingcardviolet.PNG"),
+};
 const allComp = [
   {
     id: "magazine",
     ismailsent: false,
     content: "Magazine",
     url: "",
-    img: require("../../Images/cardimages/magazine.PNG"),
   },
   {
     id: "challenge",
     ismailsent: false,
     content: "Challenge",
     url: "",
-    img: require("../../Images/cardimages/challenge.PNG"),
   },
   {
     id: "aboutquiz",
     ismailsent: false,
     content: "About Quiz",
     url: "",
-    img: require("../../Images/cardimages/aboutquiz.PNG"),
   },
   {
     id: "calendar",
     ismailsent: false,
     content: "Calendar",
     url: "",
-    img: require("../../Images/cardimages/calender.PNG"),
   },
   {
     id: "threedcarousel",
     ismailsent: false,
     content: "3D Carousel",
     url: "",
-    img: require("../../Images/cardimages/3dcarousel.PNG"),
   },
   {
     id: "honeycomb",
     ismailsent: false,
     content: "Honey Comb ",
     url: "",
-    img: require("../../Images/cardimages/honeycomb.PNG"),
   },
   {
     id: "journey",
     ismailsent: false,
     content: "Journey",
     url: "",
-    img: require("../../Images/cardimages/journey.PNG"),
   },
   {
     id: "swatchbook",
     ismailsent: false,
     content: "Swatch Book",
     url: "",
-    img: require("../../Images/cardimages/swatchBook.PNG"),
   },
   {
     id: "puzzle",
     ismailsent: false,
     content: "Slide Puzzle",
     url: "",
-    img:
-      "https://firebasestorage.googleapis.com/v0/b/update-image.appspot.com/o/imp%2Ftom-and-jerry-hd-background.jpg?alt=media&token=a5fb8323-7899-46d7-8119-16b69e1e2531",
   },
   {
     id: "specialcard",
     ismailsent: false,
     content: "Special Card",
     url: "",
-    img: require("../../Images/cardimages/specialCard.PNG"),
   },
   {
     id: "animatedframe",
     ismailsent: false,
     content: "Animated Frame ",
     url: "",
-    img: require("../../Images/cardimages/animatedFrames.PNG"),
   },
   {
     id: "threedimage",
     ismailsent: false,
     content: "3D Image",
     url: "",
-    img:
-      "https://firebasestorage.googleapis.com/v0/b/update-image.appspot.com/o/imp%2FthreeDsqr.PNG?alt=media&token=89f9386d-931d-4642-a744-761ef2b97f2d",
   },
   {
     id: "greetingcard",
     ismailsent: false,
     content: "Greeting Card",
     url: "",
-    img: require("../../Images/cardimages/greetingcardviolet.PNG"),
   },
   {
     id: "cubes",
     ismailsent: false,
     content: " 3D Heart",
     url: "",
-    img: require("../../Images/cardimages/3dheart.PNG"),
   },
   {
     id: "memorygame",
     ismailsent: false,
     content: "Memory Game",
     url: "",
-    img: require("../../Images/cardimages/memorygame.PNG"),
   },
   {
     id: "collage",
     ismailsent: false,
     content: "Collage",
     url: "",
-    img:
-      "https://firebasestorage.googleapis.com/v0/b/update-image.appspot.com/o/imp%2FcollagePNG.PNG?alt=media&token=145fccf1-8bc0-4615-9ebf-8dc87fdfcae0",
   },
   {
     id: "newspaper",
     ismailsent: false,
     content: "NewsPaper",
     url: "",
-    img: require("../../Images/cardimages/newspaper.PNG"),
   },
   {
     id: "envelopegreetingcard",
     ismailsent: false,
     content: "Envelope Card",
     url: "",
-    img: require("../../Images/cardimages/greetingcardviolet.PNG"),
   },
 ];
 
@@ -316,15 +318,20 @@ class N_Pack_Select extends Component {
                                   provided.draggableProps.style
                                 )}
                               >
+                                {console.log(
+                                  "bgimg from comp arrray: ",
+                                  allCompBannermgs[item.id]
+                                )}
                                 <div
                                   style={{
-                                    backgroundImage: "url(" + item.img + ")",
+                                    backgroundImage:
+                                      "url(" + allCompBannermgs[item.id] + ")",
                                   }}
                                   class="card npackselectcard"
                                 >
                                   <img
                                     class="card-img-top npackselectcardimg"
-                                    src={item.img}
+                                    src={allCompBannermgs[item.id]}
                                     alt={index}
                                   />
 
@@ -383,7 +390,7 @@ class N_Pack_Select extends Component {
                               <div class="col-3 m-auto">
                                 <img
                                   style={{ width: "45px" }}
-                                  src={item.img}
+                                  src={allCompBannermgs[item.id]}
                                   class="card-img"
                                   alt={index}
                                 />
