@@ -9,6 +9,7 @@ import "owl.carousel/dist/assets/owl.carousel.css";
 import "owl.carousel/dist/assets/owl.theme.default.css";
 import React, { useEffect, useState } from "react";
 import { isMobileOnly, isTablet } from "react-device-detect";
+import { getAnalytics, logEvent } from "firebase/analytics";
 import { Helmet } from "react-helmet";
 import OwlCarousel from "react-owl-carousel";
 // import Particles from "react-particles";
@@ -183,6 +184,7 @@ export default function LandingPage() {
   const [navstate, setnavstate] = useState(false);
   const FAQclasses = useFAQStyles();
   const [expanded, setExpanded] = React.useState(false);
+  const analytics = getAnalytics();
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
@@ -201,6 +203,11 @@ export default function LandingPage() {
   });
 
   useEffect(() => {
+    logEvent(analytics, 'Landing_Page', {
+      content_type: 'Page_Load_Event',
+      content_id: 'P12453',
+      items: [{ name: 'Landing page loaded' }]
+    });
     Aos.init({ disable: "mobile" });
   }, []);
   const changeBackground = () => {
@@ -572,7 +579,13 @@ export default function LandingPage() {
                   <div className="text-center">
                     <Link to="/samplegifts">
                       {" "}
-                      <button className="main-button samplegiftsbtn">
+                      <button onClick={()=>{
+                        logEvent(analytics, 'Sample_Gifts', {
+                          content_type: 'click_event',
+                          content_id: 'P12453',
+                          items: [{ name: 'Clicked on sample gifts button' }]
+                        });
+                      }} className="main-button samplegiftsbtn">
                         Sample Gifts{" "}
                         <PlayArrowOutlined className="samplegiftsbtnarrow" />
                       </button>
@@ -616,6 +629,11 @@ export default function LandingPage() {
                             days_redirect: "r",
                           },
                         });
+                        logEvent(analytics, 'Recommended_Pack', {
+                          content_type: 'click_event',
+                          content_id: 'P12455',
+                          items: [{ name: 'Clicked on Recommended_Pack' }]
+                        });
                       }}
                       class="slidehoverbtnbutton"
                     >
@@ -649,6 +667,11 @@ export default function LandingPage() {
                             days_redirect: "Valentines",
                           },
                         });
+                        logEvent(analytics, 'Valentines_Pack', {
+                          content_type: 'click_event',
+                          content_id: 'P12456',
+                          items: [{ name: 'Clicked on Valentines_Pack' }]
+                        });
                       }}
                       class="slidehoverbtnbutton"
                     >
@@ -680,6 +703,11 @@ export default function LandingPage() {
                           payload: {
                             days_redirect: "n",
                           },
+                        });
+                        logEvent(analytics, 'N_Day_Pack', {
+                          content_type: 'click_event',
+                          content_id: 'P12454',
+                          items: [{ name: 'Clicked on N_Day_Pack' }]
                         });
                       }}
                       class="slidehoverbtnbutton"
