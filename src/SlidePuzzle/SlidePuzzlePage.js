@@ -69,7 +69,7 @@ function SlidePuzzlePage() {
       addDataToRealTimeDatabase(data, "SlidePuzzle")
         .then((newKey) => {
           console.log("New key:", newKey);
-          setlivelink("http://update-image.web.app/live/slidepuzzle/" + newKey);
+          setlivelink("https://giftshub-2.web.app/live/slidepuzzle/" + newKey);
           setRealTimeDBKey(newKey);
           setpreviewlink("/live/slidepuzzle/" + newKey);
         })

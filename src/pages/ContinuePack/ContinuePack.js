@@ -198,7 +198,7 @@ function ContinuePack() {
     await getDocnew();
     setloading(false);
 
-    setlivelink("http://update-image.web.app/scheduledlive/main/" + `${slug}`);
+    setlivelink("https://giftshub-2.web.app/scheduledlive/main/" + `${slug}`);
 
     // await reloadMobileStepper();
   }

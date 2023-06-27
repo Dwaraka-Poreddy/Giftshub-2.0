@@ -65,7 +65,7 @@ function ScheduledLiveNavBar() {
           <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav text-uppercase ml-auto">
               <li class="nav-item">
-                <a class="nav-link js-scroll-trigger" href="https://update-image.web.app/aboutus/">
+                <a class="nav-link js-scroll-trigger" href="https://giftshub-2.web.app/aboutus/">
                   About
                 </a>
               </li>

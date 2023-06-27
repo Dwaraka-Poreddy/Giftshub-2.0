@@ -100,6 +100,7 @@ function Share({ livelink, from, to }) {
         {showform ? (
           <form
             onSubmit={(e) => {
+              e.preventDefault()
               sendEmail();
             }}
             className={classes.root}

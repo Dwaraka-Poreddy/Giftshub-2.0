@@ -418,7 +418,7 @@ export default function LandingPage() {
         />
         <meta
           property="og:image"
-          content="https://update-image.web.app/static/media/giftshublogo.1d76fab1.png"
+          content="https://giftshub-2.web.app/static/media/giftshublogo.1d76fab1.png"
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@giftshub" />
@@ -433,7 +433,7 @@ export default function LandingPage() {
         />
         <meta
           name="twitter:image"
-          content="https://update-image.web.app/static/media/giftshublogo.1d76fab1.png"
+          content="https://giftshub-2.web.app/static/media/giftshublogo.1d76fab1.png"
         />
       </Helmet>
 

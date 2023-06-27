@@ -14,7 +14,10 @@ import {
   CheckBoxOutlined,
   Cake,
 } from "@mui/icons-material";
-import { addDataToFirestore } from "../../Utils/firebaseUtilFunctions";
+import {
+  addDataToFirestore,
+  sendEmailWithParams,
+} from "../../Utils/firebaseUtilFunctions";
 import CropPage from "../../Utils/CropPage";
 import OwlCarousel from "react-owl-carousel";
 import "owl.carousel/dist/assets/owl.carousel.css";
@@ -199,6 +202,14 @@ function RocommendedHome({ history }) {
         parent_collection: "Livelinks",
         parent_document: nPackDocId,
         addData: false,
+      });
+
+      sendEmailWithParams({
+        folder_name: Folder_name,
+        from_name: From_name,
+        to_name: To_name,
+        to_email: user.email,
+        pack_link: `https://giftshub-2.web.app/scheduledlive/main/${nPackDocId}`,
       });
 
       navigate(`/ContinuePack/${nPackDocId}`);

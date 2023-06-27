@@ -1,5 +1,4 @@
-import { auth, db, fStore, storage } from "../firebase";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { db, fStore } from "../firebase";
 import {
   collection,
   doc,
@@ -13,9 +12,8 @@ import {
   getDocs,
 } from "firebase/firestore";
 import CryptoJS from "crypto-js";
-import { v4 as uuidv4 } from "uuid";
 import { ref as ref1, push, child, update, get } from "firebase/database";
-import { data } from "jquery";
+import emailjs from "emailjs-com";
 
 export function encryptedData(data, encryptionKey) {
   const encryptedBytes = CryptoJS.enc.Utf8.parse(data);
@@ -216,3 +214,32 @@ export async function fetchUserAllPackData(useruid) {
     return [];
   }
 }
+
+export function sendEmailWithParams({folder_name, from_name, to_name, to_email, pack_link}) {
+  var items = {
+    folder_name: folder_name,
+    from_name: from_name,
+    to_name: to_name,
+    to_email: to_email,
+    pack_link: pack_link,
+  };
+
+  emailjs
+    .send(
+      "gifts_hub",
+      "template_e5qygzm",
+      items,
+      "user_2oABpGWP8WfHfd6Kmlto3"
+    )
+    .then(
+      (response) => {
+        console.log("SUCCESS!", response.status, response.text);
+      },
+      (err) => {
+        console.log("FAILED...", err);
+      }
+    );
+}
+
+// Example usage:
+sendEmailWithParams("Folder Name", "From Name", "receiver@example.com", "https://example.com/pack");

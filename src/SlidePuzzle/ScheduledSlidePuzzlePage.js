@@ -80,7 +80,7 @@ function ScheduledSlidePuzzlePage({
         }
       });
       setlivelink(
-        "http://update-image.web.app/scheduledlive/slidepuzzle/" +
+        "https://giftshub-2.web.app/scheduledlive/slidepuzzle/" +
           edit.text +
           "/" +
           slug
@@ -118,7 +118,7 @@ function ScheduledSlidePuzzlePage({
       updateDataInRealTimeDataBase(data, "SlidePuzzle", edit.text);
 
       setlivelink(
-        "http://update-image.web.app/scheduledlive/slidepuzzle/" +
+        "https://giftshub-2.web.app/scheduledlive/slidepuzzle/" +
           edit.text +
           "/" +
           slug
@@ -128,7 +128,7 @@ function ScheduledSlidePuzzlePage({
     } else if (!livelink) {
       addDataToRealTimeDatabase(data, "SlidePuzzle").then(async (newKey) => {
         setlivelink(
-          "http://update-image.web.app/scheduledlive/slidepuzzle/" +
+          "https://giftshub-2.web.app/scheduledlive/slidepuzzle/" +
             newKey +
             "/" +
             slug
@@ -141,7 +141,7 @@ function ScheduledSlidePuzzlePage({
           const data = datanew.array_data;
           const newdata = data;
           newdata[step].url =
-            "http://update-image.web.app/scheduledlive/slidepuzzle/" +
+            "https://giftshub-2.web.app/scheduledlive/slidepuzzle/" +
             newKey +
             "/" +
             slug;
