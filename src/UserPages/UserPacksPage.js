@@ -49,6 +49,7 @@ function UserPacksPage() {
   const [gifts, setGifts] = useState([]);
   const [loading, setloading] = useState(false);
   const [error, setError] = useState();
+  const [deletePackId, setDeletePackIdset] = useState();
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   useEffect(() => {
     auth.onAuthStateChanged(async (user) => {
@@ -175,6 +176,7 @@ function UserPacksPage() {
                             <div class="col-6 col-md-12">
                               <div
                                 onClick={() => {
+                                  setDeletePackIdset(gift.id)
                                   handleDeleteDialogleOpen();
                                 }}
                                 class="col-12"
@@ -198,7 +200,8 @@ function UserPacksPage() {
                                     Cancel
                                   </Button>
                                   <Button
-                                    onClick={() => handleDeletePack(gift.id)}
+                                    onClick={() => {
+                                      handleDeletePack(deletePackId)}}
                                     color="error"
                                   >
                                     Delete
